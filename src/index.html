@@ -634,27 +634,6 @@
                 </div>
 
                 <div class="filter-group">
-                    <label class="filter-label" for="cieMarksFilter">CIE Marks</label>
-                    <select class="filter-select" id="cieMarksFilter">
-                        <option value="">All CIE Marks</option>
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label class="filter-label" for="eseMarksFilter">ESE Marks</label>
-                    <select class="filter-select" id="eseMarksFilter">
-                        <option value="">All ESE Marks</option>
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label class="filter-label">Knowledge Levels</label>
-                    <div class="checkbox-group" id="knowledgeLevelFilter">
-                        <!-- Knowledge level checkboxes will be populated here -->
-                    </div>
-                </div>
-
-                <div class="filter-group">
                     <button class="filter-select" id="clearFilters"
                         style="background: rgba(239, 68, 68, 0.1); color: #ef4444; cursor: pointer; border: 1px solid rgba(239, 68, 68, 0.3);">
                         Clear All Filters
@@ -734,10 +713,7 @@
                 this.filters = {
                     search: '',
                     semester: '',
-                    credits: '',
-                    cieMarks: '',
-                    eseMarks: '',
-                    knowledgeLevels: []
+                    credits: ''
                 };
                 this.init();
             }
@@ -784,7 +760,7 @@
 
             async backgroundRefresh() {
                 try {
-                    const response = await fetch('/data.json');
+                    const response = await fetch('/public/data.json');
                     if (!response.ok) return;
 
                     const data = await response.json();
@@ -819,7 +795,7 @@
                 });
 
                 // Filter selects
-                ['semester', 'credits', 'cieMarks', 'eseMarks'].forEach(filter => {
+                ['semester', 'credits'].forEach(filter => {
                     document.getElementById(`${filter}Filter`).addEventListener('change', (e) => {
                         this.filters[filter] = e.target.value;
                         this.applyFilters();
@@ -868,19 +844,9 @@
             populateFilters() {
                 const semesters = [...new Set(this.courses.map(c => c.semester).filter(Boolean))].sort();
                 const credits = [...new Set(this.courses.map(c => c.credits).filter(Boolean))].sort((a, b) => a - b);
-                const cieMarks = [...new Set(this.courses.map(c => c.cie_marks).filter(Boolean))].sort((a, b) => a - b);
-                const eseMarks = [...new Set(this.courses.map(c => c.ese_marks).filter(Boolean))].sort((a, b) => a - b);
-                const knowledgeLevels = [...new Set(
-                    this.courses.flatMap(c =>
-                        (c.course_outcomes || []).map(co => co.knowledge_level).filter(Boolean)
-                    )
-                )].sort();
 
                 this.populateSelect('semesterFilter', semesters);
                 this.populateSelect('creditsFilter', credits);
-                this.populateSelect('cieMarksFilter', cieMarks);
-                this.populateSelect('eseMarksFilter', eseMarks);
-                this.populateKnowledgeLevelCheckboxes(knowledgeLevels);
             }
 
             populateSelect(selectId, options) {
