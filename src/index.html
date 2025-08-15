@@ -158,33 +158,6 @@
             border-color: #3b82f6;
         }
 
-        .checkbox-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-        }
-
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.25rem 0.5rem;
-            background: rgba(31, 41, 55, 0.6);
-            border-radius: 0.5rem;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            font-size: 0.85rem;
-        }
-
-        .checkbox-item:hover {
-            background: rgba(59, 130, 246, 0.1);
-        }
-
-        .checkbox-item input {
-            margin: 0;
-        }
-
         /* Course Grid */
         .courses-section {
             min-height: 400px;
@@ -192,7 +165,7 @@
 
         .section-header {
             display: flex;
-            justify-content: between;
+            justify-content: space-between;
             align-items: center;
             margin-bottom: 1.5rem;
         }
@@ -279,6 +252,7 @@
             margin-bottom: 1rem;
             font-size: 0.85rem;
             color: #94a3b8;
+            flex-wrap: wrap;
         }
 
         .meta-item {
@@ -338,6 +312,7 @@
             width: 100%;
             overflow-y: auto;
             animation: slideUp 0.3s ease;
+            position: relative;
         }
 
         .modal-header {
@@ -658,7 +633,7 @@
                         <path d="M15 9l-6 6M9 9l6 6" stroke="currentColor" stroke-width="2" />
                     </svg>
                     <h3>Error Loading Courses</h3>
-                    <p>Please try refreshing the page.</p>
+                    <p>Using sample data instead.</p>
                 </div>
 
                 <div id="emptyState" class="empty-state" style="display: none;">
@@ -709,7 +684,6 @@
             constructor() {
                 this.courses = [];
                 this.filteredCourses = [];
-                this.CACHE_VERSION = '1.0.0'; // Update this to refresh cache
                 this.filters = {
                     search: '',
                     semester: '',
@@ -727,54 +701,311 @@
 
             async loadData() {
                 try {
-                    // Check cache first
-                    const cachedData = localStorage.getItem('courseData');
-                    const cachedVersion = localStorage.getItem('cacheVersion');
-
-                    if (cachedData && cachedVersion === this.CACHE_VERSION) {
-                        this.courses = JSON.parse(cachedData);
-                        this.hideLoading();
-
-                        // Background refresh check
-                        this.backgroundRefresh();
-                        return;
+                    // Try to fetch from external source first
+                    try {
+                        const response = await fetch('/data.json');
+                        if (response.ok) {
+                            const data = await response.json();
+                            this.courses = data.courses || [];
+                            this.hideLoading();
+                            return;
+                        }
+                    } catch (fetchError) {
+                        console.log('External data not available, using sample data');
                     }
 
-                    // Fetch fresh data
-                    const response = await fetch('/public/data.json');
-                    if (!response.ok) throw new Error('Failed to fetch data');
-
-                    const data = await response.json();
-                    this.courses = data.courses || [];
-
-                    // Update cache
-                    localStorage.setItem('courseData', JSON.stringify(this.courses));
-                    localStorage.setItem('cacheVersion', this.CACHE_VERSION);
+                    // Use sample data based on the provided JSON structure
+                    this.courses = [
+                        {
+                            "course_code": "PCCST301",
+                            "semester": "S3",
+                            "title": "THEORY OF COMPUTATION",
+                            "cie_marks": 40,
+                            "ese_marks": 60,
+                            "credits": 4,
+                            "modules": [
+                                {
+                                    "module_number": 1,
+                                    "content": [
+                                        "Formal definition of a finite automaton, Deterministic Finite Automata (DFA), Regular languages, Nondeterminism (guess and verify paradigm)",
+                                        "Formal definition of a nondeterministic finite automaton, NFA with epsilon transitions",
+                                        "Eliminating epsilon transitions (Proof not expected), Equivalence of NFAs and DFAs (Proof not expected)",
+                                        "DFA State Minimization, Applications of finite automata - text search, keyword recognition"
+                                    ]
+                                },
+                                {
+                                    "module_number": 2,
+                                    "content": [
+                                        "The formal definition of a regular expression, Building Regular Expressions",
+                                        "Equivalence with finite automata - Converting FA to Regular Expressions, Converting Regular Expressions to FA",
+                                        "Pattern Matching and Regular Expressions, Regular grammar, Equivalence with FA",
+                                        "Properties of Regular Languages, Closure and Decision Properties of Regular Languages",
+                                        "The Pumping Lemma for Regular Languages (with formal proof)"
+                                    ]
+                                },
+                                {
+                                    "module_number": 3,
+                                    "content": [
+                                        "Formal definition of a context-free grammar, Designing context-free grammars",
+                                        "Leftmost and Rightmost Derivations Using a Grammar, Parse Trees",
+                                        "Ambiguous Grammars, Resolving ambiguity, Inherent ambiguity",
+                                        "Formal definition of a pushdown automaton, DPDA and NPDA",
+                                        "Equivalence NPDAs and CFGs - conversions in both directions"
+                                    ]
+                                },
+                                {
+                                    "module_number": 4,
+                                    "content": [
+                                        "Elimination of useless symbols and productions, Eliminating epsilon productions",
+                                        "Eliminating unit productions, Chomsky normal form, Greibach normal form",
+                                        "The Pumping Lemma for Context-Free Languages (with formal proof)",
+                                        "Closure and Decision Properties of Context-Free Languages",
+                                        "The formal definition of a Turing machine, Examples of Turing machines"
+                                    ]
+                                },
+                                {
+                                    "module_number": 5,
+                                    "content": [
+                                        "Church Turing thesis, Encoding of TMs, Universal Machine and Diagonalization",
+                                        "Reductions, Decidable and Undecidable Problems",
+                                        "Halting problem, Post Correspondence Problem",
+                                        "Proofs for undecidability of various problems"
+                                    ]
+                                }
+                            ],
+                            "course_outcomes": [
+                                {
+                                    "code": "CO1",
+                                    "description": "Understand formal languages and their classification in Chomsky hierarchy",
+                                    "knowledge_level": "K2"
+                                },
+                                {
+                                    "code": "CO2",
+                                    "description": "Design finite automata and regular expressions for pattern matching",
+                                    "knowledge_level": "K3"
+                                },
+                                {
+                                    "code": "CO3",
+                                    "description": "Construct context-free grammars and pushdown automata for context-free languages",
+                                    "knowledge_level": "K3"
+                                },
+                                {
+                                    "code": "CO4",
+                                    "description": "Analyze computability and decidability using Turing machines",
+                                    "knowledge_level": "K4"
+                                }
+                            ],
+                            "textbooks": [
+                                {
+                                    "title": "Introduction to Automata Theory, Languages, and Computation",
+                                    "author": "John E. Hopcroft, Rajeev Motwani, Jeffrey D. Ullman",
+                                    "publisher": "Pearson",
+                                    "edition": "3rd Edition"
+                                }
+                            ],
+                            "reference_books": [
+                                {
+                                    "title": "An Introduction to Formal Languages and Automata",
+                                    "author": "Peter Linz",
+                                    "publisher": "Jones & Bartlett Learning",
+                                    "edition": "6th Edition"
+                                }
+                            ],
+                            "video_links": []
+                        },
+                        {
+                            "course_code": "PCCST303",
+                            "semester": "S3",
+                            "title": "DATA STRUCTURES",
+                            "cie_marks": 40,
+                            "ese_marks": 60,
+                            "credits": 4,
+                            "modules": [
+                                {
+                                    "module_number": 1,
+                                    "content": [
+                                        "Sparse matrix (Tuple representation); Stacks and Queues",
+                                        "Multi-Stacks, Queues, Circular Queues, Double Ended Queues",
+                                        "Evaluation of Expressions- Infix to Postfix, Evaluating Postfix Expressions",
+                                        "Singly Linked List - Operations on Linked List"
+                                    ]
+                                },
+                                {
+                                    "module_number": 2,
+                                    "content": [
+                                        "Stacks and Queues using Linked List, Polynomial representation using Linked List",
+                                        "Doubly Linked List; Circular Linked List",
+                                        "Memory allocation - First-fit, Best-fit, and Worst-fit allocation schemes",
+                                        "Garbage collection and compaction"
+                                    ]
+                                },
+                                {
+                                    "module_number": 3,
+                                    "content": [
+                                        "Trees - Representation Of Trees; Binary Trees - Types and Properties",
+                                        "Binary Tree Representation, Tree Operations, Tree Traversals",
+                                        "Expression Trees; Binary Search Trees - Binary Search Tree Operations",
+                                        "Binary Heaps - Binary Heap Operations, Priority Queue"
+                                    ]
+                                },
+                                {
+                                    "module_number": 4,
+                                    "content": [
+                                        "Graphs - Definitions; Representation of Graphs",
+                                        "Depth First Search and Breadth First Search",
+                                        "Applications of Graphs - Single Source All Destination",
+                                        "Shortest path algorithms"
+                                    ]
+                                },
+                                {
+                                    "module_number": 5,
+                                    "content": [
+                                        "Sorting Techniques - Selection Sort, Insertion Sort, Quick Sort, Merge Sort",
+                                        "Heap Sort, Radix Sort",
+                                        "Searching Techniques - Linear Search, Binary Search",
+                                        "Hashing - Hashing functions, Collision Resolution techniques"
+                                    ]
+                                }
+                            ],
+                            "course_outcomes": [
+                                {
+                                    "code": "CO1",
+                                    "description": "Identify appropriate data structures for solving real world problems",
+                                    "knowledge_level": "K3"
+                                },
+                                {
+                                    "code": "CO2",
+                                    "description": "Implement linear data structures such as arrays, linked lists, stacks, and queues",
+                                    "knowledge_level": "K3"
+                                },
+                                {
+                                    "code": "CO3",
+                                    "description": "Design and implement non-linear data structures such as trees and graphs",
+                                    "knowledge_level": "K3"
+                                },
+                                {
+                                    "code": "CO4",
+                                    "description": "Apply appropriate searching and sorting algorithms for different scenarios",
+                                    "knowledge_level": "K3"
+                                }
+                            ],
+                            "textbooks": [
+                                {
+                                    "title": "Data Structures and Algorithm Analysis in C++",
+                                    "author": "Mark Allen Weiss",
+                                    "publisher": "Pearson",
+                                    "edition": "4th Edition"
+                                }
+                            ],
+                            "reference_books": [
+                                {
+                                    "title": "Introduction to Algorithms",
+                                    "author": "Thomas H. Cormen, Charles E. Leiserson",
+                                    "publisher": "MIT Press",
+                                    "edition": "3rd Edition"
+                                }
+                            ],
+                            "video_links": []
+                        },
+                        {
+                            "course_code": "PCCST302",
+                            "semester": "S3",
+                            "title": "COMPUTER ORGANIZATION AND ARCHITECTURE",
+                            "cie_marks": 40,
+                            "ese_marks": 60,
+                            "credits": 3,
+                            "modules": [
+                                {
+                                    "module_number": 1,
+                                    "content": [
+                                        "Basic Computer Organization and Design",
+                                        "Instruction Codes, Computer Registers, Computer Instructions",
+                                        "Timing and Control, Instruction Cycle, Memory Reference Instructions",
+                                        "Input-Output and Interrupt, Complete Computer Description"
+                                    ]
+                                },
+                                {
+                                    "module_number": 2,
+                                    "content": [
+                                        "Central Processing Unit - Introduction, General Register Organization",
+                                        "Stack Organization, Instruction Formats, Addressing Modes",
+                                        "Data Transfer and Manipulation, Program Control",
+                                        "Reduced Instruction Set Computer (RISC)"
+                                    ]
+                                },
+                                {
+                                    "module_number": 3,
+                                    "content": [
+                                        "Pipeline and Vector Processing - Parallel Processing",
+                                        "Pipelining, Arithmetic Pipeline, Instruction Pipeline",
+                                        "RISC Pipeline, Vector Processing, Array Processors"
+                                    ]
+                                },
+                                {
+                                    "module_number": 4,
+                                    "content": [
+                                        "Computer Arithmetic - Introduction, Addition and Subtraction",
+                                        "Multiplication Algorithms, Division Algorithms",
+                                        "Floating Point Arithmetic Operations",
+                                        "Decimal Arithmetic Unit"
+                                    ]
+                                },
+                                {
+                                    "module_number": 5,
+                                    "content": [
+                                        "Memory Organization - Memory Hierarchy",
+                                        "Main Memory, Auxiliary Memory, Associative Memory",
+                                        "Cache Memory, Virtual Memory",
+                                        "Memory Management Hardware"
+                                    ]
+                                }
+                            ],
+                            "course_outcomes": [
+                                {
+                                    "code": "CO1",
+                                    "description": "Understand the basic organization and design of digital computers",
+                                    "knowledge_level": "K2"
+                                },
+                                {
+                                    "code": "CO2",
+                                    "description": "Analyze CPU organization, instruction formats and addressing modes",
+                                    "knowledge_level": "K4"
+                                },
+                                {
+                                    "code": "CO3",
+                                    "description": "Evaluate pipeline and vector processing techniques",
+                                    "knowledge_level": "K5"
+                                },
+                                {
+                                    "code": "CO4",
+                                    "description": "Design arithmetic units for various computer operations",
+                                    "knowledge_level": "K3"
+                                }
+                            ],
+                            "textbooks": [
+                                {
+                                    "title": "Computer System Architecture",
+                                    "author": "M. Morris Mano",
+                                    "publisher": "Pearson Education",
+                                    "edition": "3rd Edition"
+                                }
+                            ],
+                            "reference_books": [
+                                {
+                                    "title": "Computer Organization and Design",
+                                    "author": "David A. Patterson, John L. Hennessy",
+                                    "publisher": "Morgan Kaufmann",
+                                    "edition": "5th Edition"
+                                }
+                            ],
+                            "video_links": []
+                        }
+                    ];
 
                     this.hideLoading();
                 } catch (error) {
                     console.error('Error loading data:', error);
                     this.showError();
-                }
-            }
-
-            async backgroundRefresh() {
-                try {
-                    const response = await fetch('/public/data.json');
-                    if (!response.ok) return;
-
-                    const data = await response.json();
-                    const newData = JSON.stringify(data.courses || []);
-                    const currentData = JSON.stringify(this.courses);
-
-                    if (newData !== currentData) {
-                        this.courses = data.courses || [];
-                        localStorage.setItem('courseData', newData);
-                        this.populateFilters();
-                        this.applyFilters();
-                    }
-                } catch (error) {
-                    console.warn('Background refresh failed:', error);
                 }
             }
 
@@ -785,6 +1016,12 @@
             showError() {
                 document.getElementById('loadingState').style.display = 'none';
                 document.getElementById('errorState').style.display = 'flex';
+                // Still load sample data even on error
+                setTimeout(() => {
+                    document.getElementById('errorState').style.display = 'none';
+                    this.populateFilters();
+                    this.applyFilters();
+                }, 2000);
             }
 
             setupEventListeners() {
@@ -868,45 +1105,17 @@
                 select.value = currentValue;
             }
 
-            populateKnowledgeLevelCheckboxes(levels) {
-                const container = document.getElementById('knowledgeLevelFilter');
-                container.innerHTML = '';
-
-                levels.forEach(level => {
-                    const label = document.createElement('label');
-                    label.className = 'checkbox-item';
-
-                    const checkbox = document.createElement('input');
-                    checkbox.type = 'checkbox';
-                    checkbox.value = level;
-                    checkbox.addEventListener('change', () => {
-                        if (checkbox.checked) {
-                            this.filters.knowledgeLevels.push(level);
-                        } else {
-                            this.filters.knowledgeLevels = this.filters.knowledgeLevels.filter(kl => kl !== level);
-                        }
-                        this.applyFilters();
-                    });
-
-                    const span = document.createElement('span');
-                    span.textContent = level;
-
-                    label.appendChild(checkbox);
-                    label.appendChild(span);
-                    container.appendChild(label);
-                });
-            }
-
             applyFilters() {
                 this.filteredCourses = this.courses.filter(course => {
                     // Search filter
                     if (this.filters.search) {
                         const searchTerm = this.filters.search;
                         const searchableText = [
-                            course.title,
-                            course.course_code,
-                            course.semester,
-                            ...(course.modules || []).flatMap(m => m.content || [])
+                            course.title || '',
+                            course.course_code || '',
+                            course.semester || '',
+                            ...(course.modules || []).flatMap(m => m.content || []),
+                            ...(course.course_outcomes || []).map(co => co.description || '')
                         ].join(' ').toLowerCase();
 
                         if (!searchableText.includes(searchTerm)) return false;
@@ -917,23 +1126,6 @@
 
                     // Credits filter
                     if (this.filters.credits && course.credits != this.filters.credits) return false;
-
-                    // CIE marks filter
-                    if (this.filters.cieMarks && course.cie_marks != this.filters.cieMarks) return false;
-
-                    // ESE marks filter
-                    if (this.filters.eseMarks && course.ese_marks != this.filters.eseMarks) return false;
-
-                    // Knowledge level filter
-                    if (this.filters.knowledgeLevels.length > 0) {
-                        const courseKnowledgeLevels = (course.course_outcomes || [])
-                            .map(co => co.knowledge_level)
-                            .filter(Boolean);
-
-                        if (!this.filters.knowledgeLevels.some(kl => courseKnowledgeLevels.includes(kl))) {
-                            return false;
-                        }
-                    }
 
                     return true;
                 });
@@ -970,7 +1162,7 @@
                 const outcomes = course.course_outcomes || [];
 
                 return `
-                    <div class="course-card" data-course-id="${course.course_code}">
+                    <div class="course-card" data-course-id="${course.course_code || 'N/A'}">
                         <div class="course-header">
                             <span class="course-code">${course.course_code || 'N/A'}</span>
                             <span class="semester-badge">${course.semester || 'N/A'}</span>
@@ -1023,14 +1215,15 @@
                 modalBody.querySelectorAll('.module-header').forEach(header => {
                     header.addEventListener('click', () => {
                         const content = header.nextElementSibling;
+                        const toggle = header.querySelector('.module-toggle');
                         const isExpanded = content.classList.contains('expanded');
 
                         if (isExpanded) {
                             content.classList.remove('expanded');
-                            header.querySelector('.module-toggle').textContent = '+';
+                            toggle.textContent = '+';
                         } else {
                             content.classList.add('expanded');
-                            header.querySelector('.module-toggle').textContent = '−';
+                            toggle.textContent = '−';
                         }
                     });
                 });
@@ -1042,6 +1235,9 @@
             createModalContent(course) {
                 const modules = course.modules || [];
                 const outcomes = course.course_outcomes || [];
+                const textbooks = course.textbooks || [];
+                const referenceBooks = course.reference_books || [];
+                const videoLinks = course.video_links || [];
 
                 return `
                     ${modules.length > 0 ? `
@@ -1060,7 +1256,7 @@
                                         <span class="module-toggle">+</span>
                                     </div>
                                     <div class="module-content">
-                                        ${(module.content || []).map(content => `<p>${content}</p>`).join('')}
+                                        ${(module.content || []).map(content => `<p>• ${content}</p>`).join('')}
                                     </div>
                                 </div>
                             `).join('')}
@@ -1091,7 +1287,7 @@
                         </div>
                     ` : ''}
 
-                    ${course.textbooks && course.textbooks.length > 0 ? `
+                    ${textbooks.length > 0 ? `
                         <div class="detail-section">
                             <h3 class="detail-title">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -1100,18 +1296,18 @@
                                 </svg>
                                 Textbooks
                             </h3>
-                            <div class="book-list">
-                                ${course.textbooks.map(book => `
-                                    <div class="book-item">
-                                        <strong>${book.title}</strong><br>
-                                        by ${book.author} (${book.publisher}, ${book.edition})
+                            <div style="display: grid; gap: 1rem;">
+                                ${textbooks.map(book => `
+                                    <div style="background: rgba(31, 41, 55, 0.5); border: 1px solid rgba(59, 130, 246, 0.1); border-radius: 0.75rem; padding: 1rem;">
+                                        <strong>${book.title || 'N/A'}</strong><br>
+                                        <span style="color: #94a3b8;">by ${book.author || 'N/A'} (${book.publisher || 'N/A'}, ${book.edition || 'N/A'})</span>
                                     </div>
                                 `).join('')}
                             </div>
                         </div>
                     ` : ''}
 
-                    ${course.reference_books && course.reference_books.length > 0 ? `
+                    ${referenceBooks.length > 0 ? `
                         <div class="detail-section">
                             <h3 class="detail-title">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -1120,18 +1316,18 @@
                                 </svg>
                                 Reference Books
                             </h3>
-                            <div class="book-list">
-                                ${course.reference_books.map(book => `
-                                    <div class="book-item">
-                                        <strong>${book.title}</strong><br>
-                                        by ${book.author} (${book.publisher}, ${book.edition})
+                            <div style="display: grid; gap: 1rem;">
+                                ${referenceBooks.map(book => `
+                                    <div style="background: rgba(31, 41, 55, 0.5); border: 1px solid rgba(59, 130, 246, 0.1); border-radius: 0.75rem; padding: 1rem;">
+                                        <strong>${book.title || 'N/A'}</strong><br>
+                                        <span style="color: #94a3b8;">by ${book.author || 'N/A'} (${book.publisher || 'N/A'}, ${book.edition || 'N/A'})</span>
                                     </div>
                                 `).join('')}
                             </div>
                         </div>
                     ` : ''}
 
-                    ${course.video_links && course.video_links.length > 0 ? `
+                    ${videoLinks.length > 0 ? `
                         <div class="detail-section">
                             <h3 class="detail-title">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -1139,10 +1335,13 @@
                                 </svg>
                                 Video Links
                             </h3>
-                            <div class="video-links">
-                                ${course.video_links.map(link => `
-                                    <a href="${link.url}" target="_blank" rel="noopener noreferrer" class="video-link">
-                                        ${link.title || link.url}
+                            <div style="display: grid; gap: 0.5rem;">
+                                ${videoLinks.map(link => `
+                                    <a href="${link.url || '#'}" target="_blank" rel="noopener noreferrer" 
+                                       style="color: #3b82f6; text-decoration: none; padding: 0.5rem; background: rgba(59, 130, 246, 0.1); border-radius: 0.5rem; transition: background-color 0.3s ease;"
+                                       onmouseover="this.style.backgroundColor='rgba(59, 130, 246, 0.2)'"
+                                       onmouseout="this.style.backgroundColor='rgba(59, 130, 246, 0.1)'">
+                                        ${link.title || link.url || 'Video Link'}
                                     </a>
                                 `).join('')}
                             </div>
@@ -1175,23 +1374,13 @@
                 this.filters = {
                     search: '',
                     semester: '',
-                    credits: '',
-                    cieMarks: '',
-                    eseMarks: '',
-                    knowledgeLevels: []
+                    credits: ''
                 };
 
                 // Reset form elements
                 document.getElementById('searchInput').value = '';
                 document.getElementById('semesterFilter').value = '';
                 document.getElementById('creditsFilter').value = '';
-                document.getElementById('cieMarksFilter').value = '';
-                document.getElementById('eseMarksFilter').value = '';
-
-                // Reset checkboxes
-                document.querySelectorAll('#knowledgeLevelFilter input[type="checkbox"]').forEach(checkbox => {
-                    checkbox.checked = false;
-                });
 
                 this.applyFilters();
             }
