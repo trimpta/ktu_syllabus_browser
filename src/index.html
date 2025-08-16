@@ -703,7 +703,7 @@
                 try {
                     // Try to fetch from external source first
                     try {
-                        const response = await fetch('/data.json');
+                        const response = await fetch('/public/data.json');
                         if (response.ok) {
                             const data = await response.json();
                             this.courses = data.courses || [];
