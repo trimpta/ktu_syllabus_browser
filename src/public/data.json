@@ -5413,7 +5413,7 @@
         },
         {
           "module_no": 14,
-          "description": "Simulate the address translation in the paging scheme as follows: The program receives three command line arguments in the order ● size of the virtual address space (in megabytes) ● page size (in kilobytes) ● a virtual address (in decimal notation) The output should be the physical address corresponding to the virtual address in \u003Cframe number, offset\u003E format. You may assume that the page table is implemented as an array indexed by page numbers. (NB: If the page table has no index for the page number determined from the virtual address, you may just declare a page table miss!)",
+          "description": "Simulate the address translation in the paging scheme as follows: The program receives three command line arguments in the order ● size of the virtual address space (in megabytes) ● page size (in kilobytes) ● a virtual address (in decimal notation) The output should be the physical address corresponding to the virtual address in <frame number, offset> format. You may assume that the page table is implemented as an array indexed by page numbers. (NB: If the page table has no index for the page number determined from the virtual address, you may just declare a page table miss!)",
           "references": [],
           "contact_hours": 0
         },
