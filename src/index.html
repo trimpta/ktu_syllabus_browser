@@ -177,7 +177,7 @@
 
         .courses-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
             gap: 1.5rem;
         }
 
@@ -219,6 +219,8 @@
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
         }
 
         .course-code {
@@ -239,6 +241,15 @@
             font-weight: 600;
         }
 
+        .course-type-badge {
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
         .course-title {
             font-size: 1.1rem;
             font-weight: 600;
@@ -247,18 +258,34 @@
         }
 
         .course-meta {
-            display: flex;
-            gap: 1rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
             margin-bottom: 1rem;
             font-size: 0.85rem;
             color: #94a3b8;
-            flex-wrap: wrap;
         }
 
         .meta-item {
             display: flex;
             align-items: center;
             gap: 0.25rem;
+        }
+
+        .teaching-hours {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+            font-size: 0.8rem;
+        }
+
+        .hour-badge {
+            background: rgba(249, 115, 22, 0.1);
+            color: #f97316;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.4rem;
+            font-weight: 500;
         }
 
         .modules-preview {
@@ -307,7 +334,7 @@
             background: linear-gradient(135deg, rgba(15, 15, 35, 0.95), rgba(31, 41, 55, 0.95));
             border: 1px solid rgba(59, 130, 246, 0.3);
             border-radius: 1rem;
-            max-width: 800px;
+            max-width: 900px;
             max-height: 90vh;
             width: 100%;
             overflow-y: auto;
@@ -356,6 +383,28 @@
             gap: 0.5rem;
         }
 
+        .objectives-list {
+            background: rgba(31, 41, 55, 0.5);
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+
+        .objectives-list ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .objectives-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+            color: #cbd5e1;
+        }
+
+        .objectives-list li:last-child {
+            border-bottom: none;
+        }
+
         .module-item {
             background: rgba(31, 41, 55, 0.5);
             border: 1px solid rgba(59, 130, 246, 0.1);
@@ -380,6 +429,18 @@
         .module-title {
             font-weight: 600;
             color: #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .module-hours {
+            background: rgba(249, 115, 22, 0.1);
+            color: #f97316;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 600;
         }
 
         .module-content {
@@ -392,6 +453,14 @@
         .module-content.expanded {
             display: block;
             animation: fadeIn 0.3s ease;
+        }
+
+        .module-references {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(15, 15, 35, 0.5);
+            border-radius: 0.5rem;
+            border: 1px solid rgba(59, 130, 246, 0.1);
         }
 
         .outcome-list {
@@ -434,6 +503,40 @@
         .outcome-description {
             color: #cbd5e1;
             line-height: 1.6;
+        }
+
+        .assessment-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .assessment-item {
+            background: rgba(31, 41, 55, 0.5);
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+
+        .assessment-title {
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 0.5rem;
+        }
+
+        .prerequisites-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .prereq-badge {
+            background: rgba(139, 92, 246, 0.1);
+            color: #8b5cf6;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 600;
         }
 
         /* Loading and Error States */
@@ -518,6 +621,10 @@
             .courses-grid {
                 grid-template-columns: 1fr;
             }
+
+            .assessment-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 768px) {
@@ -544,6 +651,10 @@
             .courses-grid {
                 grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             }
+
+            .course-meta {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 480px) {
@@ -559,11 +670,6 @@
                 flex-direction: column;
                 gap: 0.5rem;
                 align-items: flex-start;
-            }
-
-            .course-meta {
-                flex-direction: column;
-                gap: 0.5rem;
             }
         }
     </style>
@@ -605,6 +711,20 @@
                     <label class="filter-label" for="creditsFilter">Credits</label>
                     <select class="filter-select" id="creditsFilter">
                         <option value="">All Credits</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label" for="courseTypeFilter">Course Type</label>
+                    <select class="filter-select" id="courseTypeFilter">
+                        <option value="">All Types</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label" for="groupFilter">Group</label>
+                    <select class="filter-select" id="groupFilter">
+                        <option value="">All Groups</option>
                     </select>
                 </div>
 
@@ -659,11 +779,15 @@
                 <div class="course-header">
                     <span class="course-code" id="modalCourseCode"></span>
                     <span class="semester-badge" id="modalSemester"></span>
+                    <span class="course-type-badge" id="modalCourseType"></span>
                 </div>
                 <h2 class="course-title" id="modalCourseTitle"></h2>
                 <div class="course-meta">
                     <div class="meta-item">
                         <strong>Credits:</strong> <span id="modalCredits"></span>
+                    </div>
+                    <div class="meta-item">
+                        <strong>Group:</strong> <span id="modalGroup"></span>
                     </div>
                     <div class="meta-item">
                         <strong>CIE:</strong> <span id="modalCIE"></span>
@@ -687,7 +811,9 @@
                 this.filters = {
                     search: '',
                     semester: '',
-                    credits: ''
+                    credits: '',
+                    courseType: '',
+                    group: ''
                 };
                 this.init();
             }
@@ -706,7 +832,15 @@
                         const response = await fetch('/public/data.json');
                         if (response.ok) {
                             const data = await response.json();
-                            this.courses = data.courses || [];
+                            // Handle different JSON structures
+                            if (Array.isArray(data)) {
+                                this.courses = data;
+                            } else if (data.courses && Array.isArray(data.courses)) {
+                                this.courses = data.courses;
+                            } else {
+                                this.courses = [data];
+                            }
+                            console.log('Loaded courses:', this.courses.length);
                             this.hideLoading();
                             return;
                         }
@@ -714,291 +848,156 @@
                         console.log('External data not available, using sample data');
                     }
 
-                    // Use sample data based on the provided JSON structure
+                    // Use sample data based on your actual JSON structure
                     this.courses = [
                         {
-                            "course_code": "PCCST301",
                             "semester": "S3",
-                            "title": "THEORY OF COMPUTATION",
-                            "cie_marks": 40,
-                            "ese_marks": 60,
-                            "credits": 4,
-                            "modules": [
-                                {
-                                    "module_number": 1,
-                                    "content": [
-                                        "Formal definition of a finite automaton, Deterministic Finite Automata (DFA), Regular languages, Nondeterminism (guess and verify paradigm)",
-                                        "Formal definition of a nondeterministic finite automaton, NFA with epsilon transitions",
-                                        "Eliminating epsilon transitions (Proof not expected), Equivalence of NFAs and DFAs (Proof not expected)",
-                                        "DFA State Minimization, Applications of finite automata - text search, keyword recognition"
-                                    ]
-                                },
-                                {
-                                    "module_number": 2,
-                                    "content": [
-                                        "The formal definition of a regular expression, Building Regular Expressions",
-                                        "Equivalence with finite automata - Converting FA to Regular Expressions, Converting Regular Expressions to FA",
-                                        "Pattern Matching and Regular Expressions, Regular grammar, Equivalence with FA",
-                                        "Properties of Regular Languages, Closure and Decision Properties of Regular Languages",
-                                        "The Pumping Lemma for Regular Languages (with formal proof)"
-                                    ]
-                                },
-                                {
-                                    "module_number": 3,
-                                    "content": [
-                                        "Formal definition of a context-free grammar, Designing context-free grammars",
-                                        "Leftmost and Rightmost Derivations Using a Grammar, Parse Trees",
-                                        "Ambiguous Grammars, Resolving ambiguity, Inherent ambiguity",
-                                        "Formal definition of a pushdown automaton, DPDA and NPDA",
-                                        "Equivalence NPDAs and CFGs - conversions in both directions"
-                                    ]
-                                },
-                                {
-                                    "module_number": 4,
-                                    "content": [
-                                        "Elimination of useless symbols and productions, Eliminating epsilon productions",
-                                        "Eliminating unit productions, Chomsky normal form, Greibach normal form",
-                                        "The Pumping Lemma for Context-Free Languages (with formal proof)",
-                                        "Closure and Decision Properties of Context-Free Languages",
-                                        "The formal definition of a Turing machine, Examples of Turing machines"
-                                    ]
-                                },
-                                {
-                                    "module_number": 5,
-                                    "content": [
-                                        "Church Turing thesis, Encoding of TMs, Universal Machine and Diagonalization",
-                                        "Reductions, Decidable and Undecidable Problems",
-                                        "Halting problem, Post Correspondence Problem",
-                                        "Proofs for undecidability of various problems"
-                                    ]
-                                }
-                            ],
-                            "course_outcomes": [
-                                {
-                                    "code": "CO1",
-                                    "description": "Understand formal languages and their classification in Chomsky hierarchy",
-                                    "knowledge_level": "K2"
-                                },
-                                {
-                                    "code": "CO2",
-                                    "description": "Design finite automata and regular expressions for pattern matching",
-                                    "knowledge_level": "K3"
-                                },
-                                {
-                                    "code": "CO3",
-                                    "description": "Construct context-free grammars and pushdown automata for context-free languages",
-                                    "knowledge_level": "K3"
-                                },
-                                {
-                                    "code": "CO4",
-                                    "description": "Analyze computability and decidability using Turing machines",
-                                    "knowledge_level": "K4"
-                                }
-                            ],
-                            "textbooks": [
-                                {
-                                    "title": "Introduction to Automata Theory, Languages, and Computation",
-                                    "author": "John E. Hopcroft, Rajeev Motwani, Jeffrey D. Ullman",
-                                    "publisher": "Pearson",
-                                    "edition": "3rd Edition"
-                                }
-                            ],
-                            "reference_books": [
-                                {
-                                    "title": "An Introduction to Formal Languages and Automata",
-                                    "author": "Peter Linz",
-                                    "publisher": "Jones & Bartlett Learning",
-                                    "edition": "6th Edition"
-                                }
-                            ],
-                            "video_links": []
-                        },
-                        {
-                            "course_code": "PCCST303",
-                            "semester": "S3",
-                            "title": "DATA STRUCTURES",
-                            "cie_marks": 40,
-                            "ese_marks": 60,
-                            "credits": 4,
-                            "modules": [
-                                {
-                                    "module_number": 1,
-                                    "content": [
-                                        "Sparse matrix (Tuple representation); Stacks and Queues",
-                                        "Multi-Stacks, Queues, Circular Queues, Double Ended Queues",
-                                        "Evaluation of Expressions- Infix to Postfix, Evaluating Postfix Expressions",
-                                        "Singly Linked List - Operations on Linked List"
-                                    ]
-                                },
-                                {
-                                    "module_number": 2,
-                                    "content": [
-                                        "Stacks and Queues using Linked List, Polynomial representation using Linked List",
-                                        "Doubly Linked List; Circular Linked List",
-                                        "Memory allocation - First-fit, Best-fit, and Worst-fit allocation schemes",
-                                        "Garbage collection and compaction"
-                                    ]
-                                },
-                                {
-                                    "module_number": 3,
-                                    "content": [
-                                        "Trees - Representation Of Trees; Binary Trees - Types and Properties",
-                                        "Binary Tree Representation, Tree Operations, Tree Traversals",
-                                        "Expression Trees; Binary Search Trees - Binary Search Tree Operations",
-                                        "Binary Heaps - Binary Heap Operations, Priority Queue"
-                                    ]
-                                },
-                                {
-                                    "module_number": 4,
-                                    "content": [
-                                        "Graphs - Definitions; Representation of Graphs",
-                                        "Depth First Search and Breadth First Search",
-                                        "Applications of Graphs - Single Source All Destination",
-                                        "Shortest path algorithms"
-                                    ]
-                                },
-                                {
-                                    "module_number": 5,
-                                    "content": [
-                                        "Sorting Techniques - Selection Sort, Insertion Sort, Quick Sort, Merge Sort",
-                                        "Heap Sort, Radix Sort",
-                                        "Searching Techniques - Linear Search, Binary Search",
-                                        "Hashing - Hashing functions, Collision Resolution techniques"
-                                    ]
-                                }
-                            ],
-                            "course_outcomes": [
-                                {
-                                    "code": "CO1",
-                                    "description": "Identify appropriate data structures for solving real world problems",
-                                    "knowledge_level": "K3"
-                                },
-                                {
-                                    "code": "CO2",
-                                    "description": "Implement linear data structures such as arrays, linked lists, stacks, and queues",
-                                    "knowledge_level": "K3"
-                                },
-                                {
-                                    "code": "CO3",
-                                    "description": "Design and implement non-linear data structures such as trees and graphs",
-                                    "knowledge_level": "K3"
-                                },
-                                {
-                                    "code": "CO4",
-                                    "description": "Apply appropriate searching and sorting algorithms for different scenarios",
-                                    "knowledge_level": "K3"
-                                }
-                            ],
-                            "textbooks": [
-                                {
-                                    "title": "Data Structures and Algorithm Analysis in C++",
-                                    "author": "Mark Allen Weiss",
-                                    "publisher": "Pearson",
-                                    "edition": "4th Edition"
-                                }
-                            ],
-                            "reference_books": [
-                                {
-                                    "title": "Introduction to Algorithms",
-                                    "author": "Thomas H. Cormen, Charles E. Leiserson",
-                                    "publisher": "MIT Press",
-                                    "edition": "3rd Edition"
-                                }
-                            ],
-                            "video_links": []
-                        },
-                        {
-                            "course_code": "PCCST302",
-                            "semester": "S3",
-                            "title": "COMPUTER ORGANIZATION AND ARCHITECTURE",
+                            "title": "MATHEMATICS FOR COMPUTER AND INFORMATION SCIENCE-3",
+                            "group": "Group A",
+                            "course_code": "GAMAT301",
                             "cie_marks": 40,
                             "ese_marks": 60,
                             "credits": 3,
-                            "modules": [
+                            "teaching_hours_per_week": {
+                                "lecture": 3,
+                                "tutorial": 0,
+                                "practical": 0,
+                                "research": 0
+                            },
+                            "exam_hours": "2 Hrs. 30 Min.",
+                            "prerequisites": ["Basic calculus"],
+                            "course_type": "Theory",
+                            "objectives": [
+                                "To familiarize students with the foundations of probability and analysis of random processes used in various applications in engineering and science."
+                            ],
+                            "syllabus_modules": [
                                 {
-                                    "module_number": 1,
-                                    "content": [
-                                        "Basic Computer Organization and Design",
-                                        "Instruction Codes, Computer Registers, Computer Instructions",
-                                        "Timing and Control, Instruction Cycle, Memory Reference Instructions",
-                                        "Input-Output and Interrupt, Complete Computer Description"
-                                    ]
+                                    "module_no": 1,
+                                    "description": "Random variables, Discrete random variables and their probability distributions, Cumulative distribution function, Expectation, Mean and variance, the Binomial probability distribution, the Poisson probability distribution, Poisson distribution as a limit of the binomial distribution, Joint pmf of two discrete random variables, Marginal pmf, Independent random variables, Expected value of a function of two discrete variables.",
+                                    "references": [
+                                        {
+                                            "book_no": 1,
+                                            "sections": "Relevant topics from sections 3.1 to 3.4, 3.6, 5.1, 5.2"
+                                        }
+                                    ],
+                                    "contact_hours": 9
                                 },
                                 {
-                                    "module_number": 2,
-                                    "content": [
-                                        "Central Processing Unit - Introduction, General Register Organization",
-                                        "Stack Organization, Instruction Formats, Addressing Modes",
-                                        "Data Transfer and Manipulation, Program Control",
-                                        "Reduced Instruction Set Computer (RISC)"
-                                    ]
+                                    "module_no": 2,
+                                    "description": "Continuous random variables and their probability distributions, Cumulative distribution function, Expectation, Mean and variance, Uniform, Normal and Exponential distributions, Joint pdf of two Continuous random variables, Marginal pdf, Independent random variables, Expectation value of a function of two continuous variables.",
+                                    "references": [
+                                        {
+                                            "book_no": 1,
+                                            "sections": "Relevant topics from sections 4.1, 4.2, 4.3, 4.4, 5.1, 5.2"
+                                        }
+                                    ],
+                                    "contact_hours": 9
                                 },
                                 {
-                                    "module_number": 3,
-                                    "content": [
-                                        "Pipeline and Vector Processing - Parallel Processing",
-                                        "Pipelining, Arithmetic Pipeline, Instruction Pipeline",
-                                        "RISC Pipeline, Vector Processing, Array Processors"
-                                    ]
+                                    "module_no": 3,
+                                    "description": "Limit theorems : Markov's Inequality, Chebyshev's Inequality, Strong Law of Large Numbers (Without proof), Central Limit Theorem (without proof), Stochastic Processes: Discrete-time process, Continuous-time process, Counting Processes, The Poisson Process, Interarrival times (Theorems without proof)",
+                                    "references": [
+                                        {
+                                            "book_no": 2,
+                                            "sections": "Relevant topics from sections 2.7, 2.9, 5.3"
+                                        }
+                                    ],
+                                    "contact_hours": 9
                                 },
                                 {
-                                    "module_number": 4,
-                                    "content": [
-                                        "Computer Arithmetic - Introduction, Addition and Subtraction",
-                                        "Multiplication Algorithms, Division Algorithms",
-                                        "Floating Point Arithmetic Operations",
-                                        "Decimal Arithmetic Unit"
-                                    ]
-                                },
-                                {
-                                    "module_number": 5,
-                                    "content": [
-                                        "Memory Organization - Memory Hierarchy",
-                                        "Main Memory, Auxiliary Memory, Associative Memory",
-                                        "Cache Memory, Virtual Memory",
-                                        "Memory Management Hardware"
-                                    ]
+                                    "module_no": 4,
+                                    "description": "Markov Chains, Random Walk Model, Chapman–Kolmogorov Equations, Classification of States, Irreducible Markov chain, Recurrent state, Transient state, Long-Run Proportions. (Theorems without proof)",
+                                    "references": [
+                                        {
+                                            "book_no": 2,
+                                            "sections": "Relevant topics from sections 4.1, 4.2, 4.3, 4.4"
+                                        }
+                                    ],
+                                    "contact_hours": 9
                                 }
                             ],
+                            "assessment": {
+                                "cie": {
+                                    "components": {
+                                        "test1": 15,
+                                        "test2": 15,
+                                        "assignment": 10
+                                    }
+                                },
+                                "ese": {
+                                    "total": 60,
+                                    "pattern": {
+                                        "part_a": "10 x 2 = 20 marks",
+                                        "part_b": "6 x 5 = 30 marks",
+                                        "part_c": "2 x 10 = 20 marks"
+                                    }
+                                }
+                            },
                             "course_outcomes": [
                                 {
-                                    "code": "CO1",
-                                    "description": "Understand the basic organization and design of digital computers",
-                                    "knowledge_level": "K2"
+                                    "co_no": "CO1",
+                                    "description": "Understand the fundamentals of probability theory and random variables",
+                                    "bloom_kl": "K2"
                                 },
                                 {
-                                    "code": "CO2",
-                                    "description": "Analyze CPU organization, instruction formats and addressing modes",
-                                    "knowledge_level": "K4"
+                                    "co_no": "CO2",
+                                    "description": "Apply probability distributions to solve engineering problems",
+                                    "bloom_kl": "K3"
                                 },
                                 {
-                                    "code": "CO3",
-                                    "description": "Evaluate pipeline and vector processing techniques",
-                                    "knowledge_level": "K5"
+                                    "co_no": "CO3",
+                                    "description": "Analyze stochastic processes and their applications",
+                                    "bloom_kl": "K4"
                                 },
                                 {
-                                    "code": "CO4",
-                                    "description": "Design arithmetic units for various computer operations",
-                                    "knowledge_level": "K3"
+                                    "co_no": "CO4",
+                                    "description": "Evaluate Markov chains and random walk models",
+                                    "bloom_kl": "K5"
                                 }
+                            ],
+                            "co_po_mapping": [
+                                { "co": "CO1", "po1": 3, "po2": 2, "po3": 1 },
+                                { "co": "CO2", "po1": 3, "po2": 3, "po3": 2 },
+                                { "co": "CO3", "po1": 3, "po2": 3, "po3": 3 },
+                                { "co": "CO4", "po1": 3, "po2": 2, "po3": 2 }
                             ],
                             "textbooks": [
                                 {
-                                    "title": "Computer System Architecture",
-                                    "author": "M. Morris Mano",
-                                    "publisher": "Pearson Education",
-                                    "edition": "3rd Edition"
+                                    "short_code": 1,
+                                    "title": "Probability and Statistics for Engineers and Scientists",
+                                    "author": "Ronald E. Walpole, Raymond H. Myers",
+                                    "publisher": "Pearson",
+                                    "edition": "9th Edition",
+                                    "year": 2016
+                                },
+                                {
+                                    "short_code": 2,
+                                    "title": "Introduction to Probability Models",
+                                    "author": "Sheldon M. Ross",
+                                    "publisher": "Academic Press",
+                                    "edition": "12th Edition",
+                                    "year": 2019
                                 }
                             ],
                             "reference_books": [
                                 {
-                                    "title": "Computer Organization and Design",
-                                    "author": "David A. Patterson, John L. Hennessy",
-                                    "publisher": "Morgan Kaufmann",
-                                    "edition": "5th Edition"
+                                    "title": "A First Course in Probability",
+                                    "author": "Sheldon Ross",
+                                    "publisher": "Pearson",
+                                    "edition": "10th Edition",
+                                    "year": 2018
                                 }
                             ],
-                            "video_links": []
+                            "video_links": [
+                                {
+                                    "module_no": 1,
+                                    "link": "https://www.youtube.com/watch?v=example1"
+                                },
+                                {
+                                    "module_no": 2,
+                                    "link": "https://www.youtube.com/watch?v=example2"
+                                }
+                            ]
                         }
                     ];
 
@@ -1032,8 +1031,10 @@
                 });
 
                 // Filter selects
-                ['semester', 'credits'].forEach(filter => {
-                    document.getElementById(`${filter}Filter`).addEventListener('change', (e) => {
+                ['semester', 'credits', 'courseType', 'group'].forEach(filter => {
+                    const elementId = filter === 'courseType' ? 'courseTypeFilter' :
+                        filter === 'group' ? 'groupFilter' : `${filter}Filter`;
+                    document.getElementById(elementId).addEventListener('change', (e) => {
                         this.filters[filter] = e.target.value;
                         this.applyFilters();
                     });
@@ -1081,9 +1082,13 @@
             populateFilters() {
                 const semesters = [...new Set(this.courses.map(c => c.semester).filter(Boolean))].sort();
                 const credits = [...new Set(this.courses.map(c => c.credits).filter(Boolean))].sort((a, b) => a - b);
+                const courseTypes = [...new Set(this.courses.map(c => c.course_type).filter(Boolean))].sort();
+                const groups = [...new Set(this.courses.map(c => c.group).filter(Boolean))].sort();
 
                 this.populateSelect('semesterFilter', semesters);
                 this.populateSelect('creditsFilter', credits);
+                this.populateSelect('courseTypeFilter', courseTypes);
+                this.populateSelect('groupFilter', groups);
             }
 
             populateSelect(selectId, options) {
@@ -1114,7 +1119,10 @@
                             course.title || '',
                             course.course_code || '',
                             course.semester || '',
-                            ...(course.modules || []).flatMap(m => m.content || []),
+                            course.group || '',
+                            course.course_type || '',
+                            ...(course.objectives || []),
+                            ...(course.syllabus_modules || []).map(m => m.description || ''),
                             ...(course.course_outcomes || []).map(co => co.description || '')
                         ].join(' ').toLowerCase();
 
@@ -1126,6 +1134,12 @@
 
                     // Credits filter
                     if (this.filters.credits && course.credits != this.filters.credits) return false;
+
+                    // Course Type filter
+                    if (this.filters.courseType && course.course_type !== this.filters.courseType) return false;
+
+                    // Group filter
+                    if (this.filters.group && course.group !== this.filters.group) return false;
 
                     return true;
                 });
@@ -1158,14 +1172,18 @@
             }
 
             createCourseCard(course) {
-                const modules = course.modules || [];
+                const modules = course.syllabus_modules || [];
                 const outcomes = course.course_outcomes || [];
+                const teachingHours = course.teaching_hours_per_week || {};
+
+                const totalWeeklyHours = Object.values(teachingHours).reduce((sum, hours) => sum + (hours || 0), 0);
 
                 return `
                     <div class="course-card" data-course-id="${course.course_code || 'N/A'}">
                         <div class="course-header">
                             <span class="course-code">${course.course_code || 'N/A'}</span>
                             <span class="semester-badge">${course.semester || 'N/A'}</span>
+                            <span class="course-type-badge">${course.course_type || 'N/A'}</span>
                         </div>
                         <h3 class="course-title">${course.title || 'Untitled Course'}</h3>
                         <div class="course-meta">
@@ -1177,18 +1195,41 @@
                             </div>
                             <div class="meta-item">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/>
+                                    <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                ${course.group || 'N/A'}
+                            </div>
+                            <div class="meta-item">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                                     <path d="M9 11H7v8h2v-8zM13 7h-2v12h2V7zM17 3h-2v16h2V3z" stroke="currentColor" stroke-width="2"/>
                                 </svg>
                                 CIE: ${course.cie_marks || 0} | ESE: ${course.ese_marks || 0}
                             </div>
+                            <div class="meta-item">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                                    <polyline points="12,6 12,12 16,14" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                ${totalWeeklyHours}h/week
+                            </div>
                         </div>
+                        ${totalWeeklyHours > 0 ? `
+                            <div class="teaching-hours">
+                                ${teachingHours.lecture ? `<span class="hour-badge">L: ${teachingHours.lecture}</span>` : ''}
+                                ${teachingHours.tutorial ? `<span class="hour-badge">T: ${teachingHours.tutorial}</span>` : ''}
+                                ${teachingHours.practical ? `<span class="hour-badge">P: ${teachingHours.practical}</span>` : ''}
+                                ${teachingHours.research ? `<span class="hour-badge">R: ${teachingHours.research}</span>` : ''}
+                            </div>
+                        ` : ''}
                         <div class="modules-preview">
                             ${modules.length} Module${modules.length !== 1 ? 's' : ''} • 
                             ${outcomes.length} Learning Outcome${outcomes.length !== 1 ? 's' : ''}
+                            ${course.prerequisites && course.prerequisites.length > 0 ? ` • ${course.prerequisites.length} Prerequisite${course.prerequisites.length !== 1 ? 's' : ''}` : ''}
                         </div>
                         <div class="outcomes-preview">
                             ${outcomes.slice(0, 3).map(outcome =>
-                    `<span class="outcome-badge">${outcome.knowledge_level || 'N/A'}</span>`
+                    `<span class="outcome-badge">${outcome.bloom_kl || 'N/A'}</span>`
                 ).join('')}
                             ${outcomes.length > 3 ? `<span class="outcome-badge">+${outcomes.length - 3} more</span>` : ''}
                         </div>
@@ -1202,8 +1243,10 @@
                 // Populate modal header
                 document.getElementById('modalCourseCode').textContent = course.course_code || 'N/A';
                 document.getElementById('modalSemester').textContent = course.semester || 'N/A';
+                document.getElementById('modalCourseType').textContent = course.course_type || 'N/A';
                 document.getElementById('modalCourseTitle').textContent = course.title || 'Untitled Course';
                 document.getElementById('modalCredits').textContent = course.credits || 0;
+                document.getElementById('modalGroup').textContent = course.group || 'N/A';
                 document.getElementById('modalCIE').textContent = course.cie_marks || 0;
                 document.getElementById('modalESE').textContent = course.ese_marks || 0;
 
@@ -1233,13 +1276,65 @@
             }
 
             createModalContent(course) {
-                const modules = course.modules || [];
+                const objectives = course.objectives || [];
+                const modules = course.syllabus_modules || [];
                 const outcomes = course.course_outcomes || [];
+                const assessment = course.assessment || {};
+                const prerequisites = course.prerequisites || [];
                 const textbooks = course.textbooks || [];
                 const referenceBooks = course.reference_books || [];
                 const videoLinks = course.video_links || [];
+                const teachingHours = course.teaching_hours_per_week || {};
 
                 return `
+                    ${prerequisites.length > 0 ? `
+                        <div class="detail-section">
+                            <h3 class="detail-title">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                Prerequisites
+                            </h3>
+                            <div class="prerequisites-list">
+                                ${prerequisites.map(prereq => `<span class="prereq-badge">${prereq}</span>`).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    ${Object.keys(teachingHours).some(key => teachingHours[key] > 0) ? `
+                        <div class="detail-section">
+                            <h3 class="detail-title">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                                    <polyline points="12,6 12,12 16,14" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                Teaching Hours per Week
+                            </h3>
+                            <div class="teaching-hours">
+                                ${teachingHours.lecture ? `<span class="hour-badge">Lecture: ${teachingHours.lecture}</span>` : ''}
+                                ${teachingHours.tutorial ? `<span class="hour-badge">Tutorial: ${teachingHours.tutorial}</span>` : ''}
+                                ${teachingHours.practical ? `<span class="hour-badge">Practical: ${teachingHours.practical}</span>` : ''}
+                                ${teachingHours.research ? `<span class="hour-badge">Research: ${teachingHours.research}</span>` : ''}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    ${objectives.length > 0 ? `
+                        <div class="detail-section">
+                            <h3 class="detail-title">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                Course Objectives
+                            </h3>
+                            <div class="objectives-list">
+                                <ul>
+                                    ${objectives.map(objective => `<li>• ${objective}</li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    ` : ''}
+
                     ${modules.length > 0 ? `
                         <div class="detail-section">
                             <h3 class="detail-title">
@@ -1247,16 +1342,27 @@
                                     <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" stroke="currentColor" stroke-width="2"/>
                                     <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" stroke="currentColor" stroke-width="2"/>
                                 </svg>
-                                Course Modules
+                                Syllabus Modules
                             </h3>
                             ${modules.map(module => `
                                 <div class="module-item">
                                     <div class="module-header">
-                                        <span class="module-title">Module ${module.module_number}</span>
+                                        <span class="module-title">
+                                            Module ${module.module_no}
+                                            ${module.contact_hours ? `<span class="module-hours">${module.contact_hours}h</span>` : ''}
+                                        </span>
                                         <span class="module-toggle">+</span>
                                     </div>
                                     <div class="module-content">
-                                        ${(module.content || []).map(content => `<p>• ${content}</p>`).join('')}
+                                        <p>${module.description || 'No description available'}</p>
+                                        ${module.references && module.references.length > 0 ? `
+                                            <div class="module-references">
+                                                <strong>References:</strong>
+                                                ${module.references.map(ref => `
+                                                    <p>• Book ${ref.book_no}: ${ref.sections}</p>
+                                                `).join('')}
+                                            </div>
+                                        ` : ''}
                                     </div>
                                 </div>
                             `).join('')}
@@ -1275,14 +1381,48 @@
                                 ${outcomes.map(outcome => `
                                     <div class="outcome-item">
                                         <div class="outcome-header">
-                                            <span class="outcome-code">${outcome.code || 'N/A'}</span>
-                                            <span class="knowledge-level">${outcome.knowledge_level || 'N/A'}</span>
+                                            <span class="outcome-code">${outcome.co_no || 'N/A'}</span>
+                                            <span class="knowledge-level">${outcome.bloom_kl || 'N/A'}</span>
                                         </div>
                                         <div class="outcome-description">
                                             ${outcome.description || 'No description available'}
                                         </div>
                                     </div>
                                 `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    ${(assessment.cie || assessment.ese) ? `
+                        <div class="detail-section">
+                            <h3 class="detail-title">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                                    <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="16" y1="13" x2="8" y2="13" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="16" y1="17" x2="8" y2="17" stroke="currentColor" stroke-width="2"/>
+                                    <polyline points="10,9 9,9 8,9" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                Assessment Pattern
+                            </h3>
+                            <div class="assessment-grid">
+                                ${assessment.cie ? `
+                                    <div class="assessment-item">
+                                        <div class="assessment-title">Continuous Internal Evaluation (CIE)</div>
+                                        ${Object.entries(assessment.cie.components || {}).map(([component, marks]) => `
+                                            <p><strong>${component.charAt(0).toUpperCase() + component.slice(1)}:</strong> ${marks} marks</p>
+                                        `).join('')}
+                                    </div>
+                                ` : ''}
+                                ${assessment.ese ? `
+                                    <div class="assessment-item">
+                                        <div class="assessment-title">End Semester Examination (ESE)</div>
+                                        <p><strong>Total:</strong> ${assessment.ese.total || 0} marks</p>
+                                        ${Object.entries(assessment.ese.pattern || {}).map(([part, description]) => `
+                                            <p><strong>${part.replace('_', ' ').toUpperCase()}:</strong> ${description}</p>
+                                        `).join('')}
+                                    </div>
+                                ` : ''}
                             </div>
                         </div>
                     ` : ''}
@@ -1299,8 +1439,14 @@
                             <div style="display: grid; gap: 1rem;">
                                 ${textbooks.map(book => `
                                     <div style="background: rgba(31, 41, 55, 0.5); border: 1px solid rgba(59, 130, 246, 0.1); border-radius: 0.75rem; padding: 1rem;">
-                                        <strong>${book.title || 'N/A'}</strong><br>
-                                        <span style="color: #94a3b8;">by ${book.author || 'N/A'} (${book.publisher || 'N/A'}, ${book.edition || 'N/A'})</span>
+                                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+                                            <strong>${book.title || 'N/A'}</strong>
+                                            ${book.short_code ? `<span style="background: rgba(59, 130, 246, 0.1); color: #3b82f6; padding: 0.25rem 0.5rem; border-radius: 0.5rem; font-size: 0.8rem;">[${book.short_code}]</span>` : ''}
+                                        </div>
+                                        <span style="color: #94a3b8;">
+                                            by ${book.author || 'N/A'}<br>
+                                            ${book.publisher || 'N/A'}, ${book.edition || 'N/A'} (${book.year || 'N/A'})
+                                        </span>
                                     </div>
                                 `).join('')}
                             </div>
@@ -1320,7 +1466,10 @@
                                 ${referenceBooks.map(book => `
                                     <div style="background: rgba(31, 41, 55, 0.5); border: 1px solid rgba(59, 130, 246, 0.1); border-radius: 0.75rem; padding: 1rem;">
                                         <strong>${book.title || 'N/A'}</strong><br>
-                                        <span style="color: #94a3b8;">by ${book.author || 'N/A'} (${book.publisher || 'N/A'}, ${book.edition || 'N/A'})</span>
+                                        <span style="color: #94a3b8;">
+                                            by ${book.author || 'N/A'}<br>
+                                            ${book.publisher || 'N/A'}, ${book.edition || 'N/A'} (${book.year || 'N/A'})
+                                        </span>
                                     </div>
                                 `).join('')}
                             </div>
@@ -1337,13 +1486,31 @@
                             </h3>
                             <div style="display: grid; gap: 0.5rem;">
                                 ${videoLinks.map(link => `
-                                    <a href="${link.url || '#'}" target="_blank" rel="noopener noreferrer" 
-                                       style="color: #3b82f6; text-decoration: none; padding: 0.5rem; background: rgba(59, 130, 246, 0.1); border-radius: 0.5rem; transition: background-color 0.3s ease;"
-                                       onmouseover="this.style.backgroundColor='rgba(59, 130, 246, 0.2)'"
-                                       onmouseout="this.style.backgroundColor='rgba(59, 130, 246, 0.1)'">
-                                        ${link.title || link.url || 'Video Link'}
-                                    </a>
+                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: rgba(59, 130, 246, 0.1); border-radius: 0.5rem;">
+                                        <span>Module ${link.module_no}</span>
+                                        <a href="${link.link || '#'}" target="_blank" rel="noopener noreferrer" 
+                                           style="color: #3b82f6; text-decoration: none; padding: 0.5rem 1rem; background: rgba(59, 130, 246, 0.2); border-radius: 0.5rem; transition: all 0.3s ease;"
+                                           onmouseover="this.style.backgroundColor='rgba(59, 130, 246, 0.3)'"
+                                           onmouseout="this.style.backgroundColor='rgba(59, 130, 246, 0.2)'">
+                                            Watch Video →
+                                        </a>
+                                    </div>
                                 `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    ${course.exam_hours ? `
+                        <div class="detail-section">
+                            <h3 class="detail-title">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                                    <polyline points="12,6 12,12 16,14" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                Exam Duration
+                            </h3>
+                            <div style="background: rgba(31, 41, 55, 0.5); border: 1px solid rgba(59, 130, 246, 0.1); border-radius: 0.75rem; padding: 1rem;">
+                                <strong>${course.exam_hours}</strong>
                             </div>
                         </div>
                     ` : ''}
@@ -1374,13 +1541,17 @@
                 this.filters = {
                     search: '',
                     semester: '',
-                    credits: ''
+                    credits: '',
+                    courseType: '',
+                    group: ''
                 };
 
                 // Reset form elements
                 document.getElementById('searchInput').value = '';
                 document.getElementById('semesterFilter').value = '';
                 document.getElementById('creditsFilter').value = '';
+                document.getElementById('courseTypeFilter').value = '';
+                document.getElementById('groupFilter').value = '';
 
                 this.applyFilters();
             }
