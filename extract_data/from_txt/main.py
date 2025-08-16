@@ -220,7 +220,7 @@ Syllabus text:
 def main():
     """Main execution function"""
     # Configuration
-    API_KEY = "KEY"  # Replace with your actual API key
+    API_KEY = "AIzaSyDIOUXt-e3fUNFIvmiGKQwUhK8-Etg1xT0"  # Replace with your actual API key
     INPUT_FILE = "data.txt"
     OUTPUT_FILE = "processed_syllabi.json"
     
