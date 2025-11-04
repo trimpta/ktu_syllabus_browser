@@ -1,0 +1,2274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Catalog</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+            color: #e0e6ed;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(15, 15, 35, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 1rem 0;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .search-container {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            background: rgba(31, 41, 55, 0.8);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 0.75rem;
+            color: #e0e6ed;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+        }
+
+        .settings-icon {
+            background: none;
+            border: none;
+            color: #6b7280;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .settings-icon:hover {
+            color: #3b82f6;
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .filter-toggle {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #3b82f6;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        .filter-toggle:hover {
+            background: rgba(59, 130, 246, 0.2);
+        }
+
+        /* Main Layout */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 2rem;
+            padding: 2rem 0;
+            min-height: calc(100vh - 100px);
+        }
+
+        /* Sidebar Filters */
+        .filters-sidebar {
+            background: rgba(15, 15, 35, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            height: fit-content;
+            position: sticky;
+            top: 120px;
+            transition: transform 0.3s ease;
+        }
+
+        .filters-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #3b82f6;
+        }
+
+        .filter-group {
+            margin-bottom: 2rem;
+        }
+
+        .filter-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #cbd5e1;
+        }
+
+        .filter-select,
+        .filter-input {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            background: rgba(31, 41, 55, 0.8);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 0.5rem;
+            color: #e0e6ed;
+            font-size: 0.9rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .filter-select:focus,
+        .filter-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        /* Course Grid */
+        .courses-section {
+            min-height: 400px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .results-info {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .course-card {
+            background: linear-gradient(135deg, rgba(31, 41, 55, 0.8), rgba(15, 15, 35, 0.8));
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .course-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .course-card:hover {
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.1);
+        }
+
+        .course-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .course-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .course-code {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .semester-badge {
+            background: rgba(139, 92, 246, 0.1);
+            color: #8b5cf6;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .course-type-badge {
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .course-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #f1f5f9;
+        }
+
+        .course-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .teaching-hours {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+            font-size: 0.8rem;
+        }
+
+        .hour-badge {
+            background: rgba(249, 115, 22, 0.1);
+            color: #f97316;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.4rem;
+            font-weight: 500;
+        }
+
+        .modules-preview {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .outcomes-preview {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .outcome-badge {
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        /* Course Detail Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, rgba(15, 15, 35, 0.95), rgba(31, 41, 55, 0.95));
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 1rem;
+            max-width: 900px;
+            max-height: 90vh;
+            width: 100%;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+            position: relative;
+        }
+
+        .modal-header {
+            padding: 2rem 2rem 1rem;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .llm-button {
+            position: absolute;
+            top: 1rem;
+            right: 4rem;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #e0e6ed;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .llm-button:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(139, 92, 246, 0.3));
+            border-color: #3b82f6;
+        }
+
+        .llm-dropdown {
+            position: absolute;
+            top: 3rem;
+            right: 4rem;
+            background: rgba(15, 15, 35, 0.98);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 0.75rem;
+            padding: 0.5rem;
+            min-width: 200px;
+            z-index: 1001;
+            display: none;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .llm-dropdown.active {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .llm-option {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            border-radius: 0.5rem;
+            transition: background 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #e0e6ed;
+        }
+
+        .llm-option:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .llm-option.default::after {
+            content: '✓';
+            margin-left: auto;
+            color: #22c55e;
+        }
+
+        .llm-divider {
+            height: 1px;
+            background: rgba(59, 130, 246, 0.2);
+            margin: 0.5rem 0;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: #6b7280;
+            cursor: pointer;
+            font-size: 1.5rem;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: #e0e6ed;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .detail-section {
+            margin-bottom: 2rem;
+        }
+
+        .detail-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #3b82f6;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .objectives-list {
+            background: rgba(31, 41, 55, 0.5);
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+
+        .objectives-list ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .objectives-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+            color: #cbd5e1;
+        }
+
+        .objectives-list li:last-child {
+            border-bottom: none;
+        }
+
+        .module-item {
+            background: rgba(31, 41, 55, 0.5);
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            border-radius: 0.75rem;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .module-header {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .module-header:hover {
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .module-title {
+            font-weight: 600;
+            color: #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .module-hours {
+            background: rgba(249, 115, 22, 0.1);
+            color: #f97316;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .module-copy-btn {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.4rem;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .module-copy-btn:hover {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: #3b82f6;
+        }
+
+        .module-copy-btn.copied {
+            background: rgba(34, 197, 94, 0.1);
+            border-color: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+
+        .module-content {
+            padding: 0 1.5rem 1.5rem;
+            color: #cbd5e1;
+            line-height: 1.7;
+            display: none;
+        }
+
+        .module-content.expanded {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .module-references {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(15, 15, 35, 0.5);
+            border-radius: 0.5rem;
+            border: 1px solid rgba(59, 130, 246, 0.1);
+        }
+
+        .outcome-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .outcome-item {
+            background: rgba(31, 41, 55, 0.5);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+
+        .outcome-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .outcome-code {
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .knowledge-level {
+            background: rgba(249, 115, 22, 0.1);
+            color: #f97316;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .outcome-description {
+            color: #cbd5e1;
+            line-height: 1.6;
+        }
+
+        .assessment-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .assessment-item {
+            background: rgba(31, 41, 55, 0.5);
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+
+        .assessment-title {
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 0.5rem;
+        }
+
+        .prerequisites-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .prereq-badge {
+            background: rgba(139, 92, 246, 0.1);
+            color: #8b5cf6;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Toast Container */
+        .toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            pointer-events: none;
+        }
+
+        .toast {
+            background: linear-gradient(135deg, rgba(15, 15, 35, 0.95), rgba(31, 41, 55, 0.95));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 0.75rem;
+            padding: 1rem 1.5rem;
+            color: #e0e6ed;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            animation: slideInRight 0.3s ease;
+            pointer-events: auto;
+            min-width: 300px;
+            max-width: 400px;
+        }
+
+        .toast-success {
+            border-color: rgba(34, 197, 94, 0.3);
+        }
+
+        .toast-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .toast-icon {
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .toast-message {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .toast-description {
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+
+        .toast-action {
+            margin-top: 0.5rem;
+        }
+
+        .toast-button {
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #3b82f6;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .toast-button:hover {
+            background: rgba(59, 130, 246, 0.3);
+            border-color: #3b82f6;
+        }
+
+        /* Loading and Error States */
+        .loading-state,
+        .error-state,
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+            text-align: center;
+            color: #6b7280;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(59, 130, 246, 0.3);
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        /* Animations */
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+
+        .toast.hiding {
+            animation: slideOutRight 0.3s ease forwards;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 1024px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .filters-sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 200;
+                transform: translateX(-100%);
+                border-radius: 0;
+                margin: 0;
+                overflow-y: auto;
+            }
+
+            .filters-sidebar.mobile-open {
+                transform: translateX(0);
+            }
+
+            .filter-toggle {
+                display: block;
+            }
+
+            .courses-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .assessment-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .llm-dropdown {
+                position: fixed;
+                top: auto;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                border-radius: 1rem 1rem 0 0;
+                min-width: auto;
+            }
+
+            .llm-button {
+                right: 3rem;
+                font-size: 0.8rem;
+                padding: 0.4rem 0.8rem;
+            }
+
+            .toast-container {
+                bottom: 1rem;
+                right: 1rem;
+                left: 1rem;
+            }
+
+            .toast {
+                min-width: auto;
+                max-width: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .search-container {
+                order: 2;
+                max-width: none;
+            }
+
+            .modal-content {
+                margin: 1rem;
+                max-height: calc(100vh - 2rem);
+            }
+
+            .modal-header,
+            .modal-body {
+                padding: 1.5rem;
+            }
+
+            .courses-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+
+            .course-meta {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 0.75rem;
+            }
+
+            .course-card {
+                padding: 1rem;
+            }
+
+            .course-header {
+                flex-direction: column;
+                gap: 0.5rem;
+                align-items: flex-start;
+            }
+
+            .llm-button {
+                position: static;
+                width: 100%;
+                justify-content: center;
+                margin-bottom: 1rem;
+            }
+
+            .modal-close {
+                top: 0.5rem;
+                right: 0.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">Course Catalog</h1>
+                <div class="search-container">
+                    <input type="text" class="search-input" id="searchInput" placeholder="Search courses...">
+                    <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2" />
+                        <path d="m21 21-4.35-4.35" stroke="currentColor" stroke-width="2" />
+                    </svg>
+                </div>
+                <button class="settings-icon" id="settingsButton" title="Settings">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                        <path d="M12 1v6m0 6v10M1 12h6m6 0h10" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </button>
+                <button class="filter-toggle" id="filterToggle">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M3 6h18M7 12h10M11 18h2" stroke="currentColor" stroke-width="2" />
+                    </svg>
+                    Filters
+                </button>
+            </div>
+        </header>
+
+        <main class="main-layout">
+            <aside class="filters-sidebar" id="filtersSidebar">
+                <h3 class="filters-title">Filters</h3>
+
+                <div class="filter-group">
+                    <label class="filter-label" for="semesterFilter">Semester</label>
+                    <select class="filter-select" id="semesterFilter">
+                        <option value="">All Semesters</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label" for="creditsFilter">Credits</label>
+                    <select class="filter-select" id="creditsFilter">
+                        <option value="">All Credits</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label" for="courseTypeFilter">Course Type</label>
+                    <select class="filter-select" id="courseTypeFilter">
+                        <option value="">All Types</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label" for="groupFilter">Group</label>
+                    <select class="filter-select" id="groupFilter">
+                        <option value="">All Groups</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <button class="filter-select" id="clearFilters"
+                        style="background: rgba(239, 68, 68, 0.1); color: #ef4444; cursor: pointer; border: 1px solid rgba(239, 68, 68, 0.3);">
+                        Clear All Filters
+                    </button>
+                </div>
+            </aside>
+
+            <section class="courses-section">
+                <div class="section-header">
+                    <div class="results-info" id="resultsInfo">Loading courses...</div>
+                </div>
+
+                <div id="loadingState" class="loading-state">
+                    <div class="loading-spinner"></div>
+                    <p>Loading courses...</p>
+                </div>
+
+                <div id="errorState" class="error-state" style="display: none;">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none"
+                        style="color: #ef4444; margin-bottom: 1rem;">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+                        <path d="M15 9l-6 6M9 9l6 6" stroke="currentColor" stroke-width="2" />
+                    </svg>
+                    <h3>Error Loading Courses</h3>
+                    <p>Using sample data instead.</p>
+                </div>
+
+                <div id="emptyState" class="empty-state" style="display: none;">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none"
+                        style="color: #6b7280; margin-bottom: 1rem;">
+                        <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2" />
+                        <path d="m21 21-4.35-4.35" stroke="currentColor" stroke-width="2" />
+                    </svg>
+                    <h3>No Courses Found</h3>
+                    <p>Try adjusting your search or filters.</p>
+                </div>
+
+                <div class="courses-grid" id="coursesGrid"></div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Course Detail Modal -->
+    <div class="modal-overlay" id="courseModal">
+        <div class="modal-content">
+            <button class="llm-button" id="llmButton">
+                <span>Open in LLM</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <polyline points="6 9 12 15 18 9" stroke="currentColor" stroke-width="2"/>
+                </svg>
+            </button>
+            <div class="llm-dropdown" id="llmDropdown">
+                <!-- Populated by JavaScript -->
+            </div>
+            <button class="modal-close" id="modalClose">&times;</button>
+            <div class="modal-header">
+                <div class="course-header">
+                    <span class="course-code" id="modalCourseCode"></span>
+                    <span class="semester-badge" id="modalSemester"></span>
+                    <span class="course-type-badge" id="modalCourseType"></span>
+                </div>
+                <h2 class="course-title" id="modalCourseTitle"></h2>
+                <div class="course-meta">
+                    <div class="meta-item">
+                        <strong>Credits:</strong> <span id="modalCredits"></span>
+                    </div>
+                    <div class="meta-item">
+                        <strong>Group:</strong> <span id="modalGroup"></span>
+                    </div>
+                    <div class="meta-item">
+                        <strong>CIE:</strong> <span id="modalCIE"></span>
+                    </div>
+                    <div class="meta-item">
+                        <strong>ESE:</strong> <span id="modalESE"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Modal content will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal-content" style="max-width: 600px;">
+            <button class="modal-close" id="settingsClose">&times;</button>
+            <div class="modal-header">
+                <h2 class="course-title">Settings</h2>
+            </div>
+            <div class="modal-body">
+                <div class="detail-section">
+                    <h3 class="detail-title">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        Default LLM
+                    </h3>
+                    <select class="filter-select" id="defaultLlmSelect">
+                        <!-- Populated by JavaScript -->
+                    </select>
+                </div>
+                
+                <div class="detail-section">
+                    <h3 class="detail-title">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <polyline points="3 6 5 6 21 6" stroke="currentColor" stroke-width="2"/>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        Clear Data
+                    </h3>
+                    <button class="filter-select" id="clearDataButton"
+                        style="background: rgba(239, 68, 68, 0.1); color: #ef4444; cursor: pointer; border: 1px solid rgba(239, 68, 68, 0.3);">
+                        Clear All Local Data
+                    </button>
+                    <p style="color: #6b7280; font-size: 0.85rem; margin-top: 0.5rem;">
+                        This will clear your default LLM preference and any stored settings.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // LLM Provider Configuration
+        const LLM_PROVIDERS = [
+            {
+                id: 'chatgpt',
+                name: 'ChatGPT',
+                baseUrl: 'https://chat.openai.com/',
+                supportsUrlQuery: false,
+                icon: '💬'
+            },
+            {
+                id: 'claude',
+                name: 'Claude',
+                baseUrl: 'https://claude.ai/new',
+                supportsUrlQuery: false,
+                icon: '🧠'
+            },
+            {
+                id: 'gemini',
+                name: 'Gemini',
+                baseUrl: 'https://gemini.google.com/',
+                supportsUrlQuery: false,
+                icon: '✨'
+            },
+            {
+                id: 'perplexity',
+                name: 'Perplexity',
+                baseUrl: 'https://www.perplexity.ai/',
+                supportsUrlQuery: true,
+                queryParam: 'q',
+                icon: '🔍'
+            },
+            {
+                id: 'copilot',
+                name: 'Copilot',
+                baseUrl: 'https://copilot.microsoft.com/',
+                supportsUrlQuery: true,
+                queryParam: 'q',
+                icon: '🤖'
+            }
+        ];
+
+        // Toast Manager
+        class ToastManager {
+            constructor() {
+                this.container = document.getElementById('toastContainer');
+            }
+
+            show(message, options = {}) {
+                const toast = document.createElement('div');
+                toast.className = `toast ${options.success ? 'toast-success' : ''}`;
+                
+                let content = `
+                    <div class="toast-content">
+                        <div class="toast-icon">${options.icon || '✓'}</div>
+                        <div class="toast-message">
+                            <div class="toast-title">${message}</div>
+                            ${options.description ? `<div class="toast-description">${options.description}</div>` : ''}
+                            ${options.action ? `
+                                <div class="toast-action">
+                                    <button class="toast-button" onclick="${options.action.onClick}">
+                                        ${options.action.label}
+                                    </button>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+                
+                toast.innerHTML = content;
+                this.container.appendChild(toast);
+
+                // Auto dismiss
+                const duration = options.duration !== undefined ? options.duration : 3000;
+                if (duration > 0) {
+                    setTimeout(() => {
+                        this.dismiss(toast);
+                    }, duration);
+                }
+
+                // Click to dismiss
+                toast.addEventListener('click', (e) => {
+                    if (!e.target.closest('.toast-button')) {
+                        this.dismiss(toast);
+                    }
+                });
+
+                return toast;
+            }
+
+            dismiss(toast) {
+                toast.classList.add('hiding');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }
+        }
+
+        const toastManager = new ToastManager();
+
+        class CourseManager {
+            constructor() {
+                this.courses = [];
+                this.filteredCourses = [];
+                this.currentCourse = null;
+                this.filters = {
+                    search: '',
+                    semester: '',
+                    credits: '',
+                    courseType: '',
+                    group: ''
+                };
+                this.init();
+            }
+
+            async init() {
+                await this.loadData();
+                this.setupEventListeners();
+                this.populateFilters();
+                this.applyFilters();
+            }
+
+            async loadData() {
+                try {
+                    // Try to fetch from external source first
+                    try {
+                        const response = await fetch('/public/data.json');
+                        if (response.ok) {
+                            const data = await response.json();
+                            // Handle different JSON structures
+                            if (Array.isArray(data)) {
+                                this.courses = data;
+                            } else if (data.courses && Array.isArray(data.courses)) {
+                                this.courses = data.courses;
+                            } else {
+                                this.courses = [data];
+                            }
+                            console.log('Loaded courses:', this.courses.length);
+                            this.hideLoading();
+                            return;
+                        }
+                    } catch (fetchError) {
+                        console.log('External data not available, using sample data');
+                    }
+
+                    // Use sample data based on your actual JSON structure
+                    this.courses = [
+                        {
+                            "semester": "S3",
+                            "title": "MATHEMATICS FOR COMPUTER AND INFORMATION SCIENCE-3",
+                            "group": "Group A",
+                            "course_code": "GAMAT301",
+                            "cie_marks": 40,
+                            "ese_marks": 60,
+                            "credits": 3,
+                            "teaching_hours_per_week": {
+                                "lecture": 3,
+                                "tutorial": 0,
+                                "practical": 0,
+                                "research": 0
+                            },
+                            "exam_hours": "2 Hrs. 30 Min.",
+                            "prerequisites": ["Basic calculus"],
+                            "course_type": "Theory",
+                            "objectives": [
+                                "To familiarize students with the foundations of probability and analysis of random processes used in various applications in engineering and science."
+                            ],
+                            "syllabus_modules": [
+                                {
+                                    "module_no": 1,
+                                    "description": "Random variables, Discrete random variables and their probability distributions, Cumulative distribution function, Expectation, Mean and variance, the Binomial probability distribution, the Poisson probability distribution, Poisson distribution as a limit of the binomial distribution, Joint pmf of two discrete random variables, Marginal pmf, Independent random variables, Expected value of a function of two discrete variables.",
+                                    "references": [
+                                        {
+                                            "book_no": 1,
+                                            "sections": "Relevant topics from sections 3.1 to 3.4, 3.6, 5.1, 5.2"
+                                        }
+                                    ],
+                                    "contact_hours": 9
+                                },
+                                {
+                                    "module_no": 2,
+                                    "description": "Continuous random variables and their probability distributions, Cumulative distribution function, Expectation, Mean and variance, Uniform, Normal and Exponential distributions, Joint pdf of two Continuous random variables, Marginal pdf, Independent random variables, Expectation value of a function of two continuous variables.",
+                                    "references": [
+                                        {
+                                            "book_no": 1,
+                                            "sections": "Relevant topics from sections 4.1, 4.2, 4.3, 4.4, 5.1, 5.2"
+                                        }
+                                    ],
+                                    "contact_hours": 9
+                                },
+                                {
+                                    "module_no": 3,
+                                    "description": "Limit theorems : Markov's Inequality, Chebyshev's Inequality, Strong Law of Large Numbers (Without proof), Central Limit Theorem (without proof), Stochastic Processes: Discrete-time process, Continuous-time process, Counting Processes, The Poisson Process, Interarrival times (Theorems without proof)",
+                                    "references": [
+                                        {
+                                            "book_no": 2,
+                                            "sections": "Relevant topics from sections 2.7, 2.9, 5.3"
+                                        }
+                                    ],
+                                    "contact_hours": 9
+                                },
+                                {
+                                    "module_no": 4,
+                                    "description": "Markov Chains, Random Walk Model, Chapman–Kolmogorov Equations, Classification of States, Irreducible Markov chain, Recurrent state, Transient state, Long-Run Proportions. (Theorems without proof)",
+                                    "references": [
+                                        {
+                                            "book_no": 2,
+                                            "sections": "Relevant topics from sections 4.1, 4.2, 4.3, 4.4"
+                                        }
+                                    ],
+                                    "contact_hours": 9
+                                }
+                            ],
+                            "assessment": {
+                                "cie": {
+                                    "components": {
+                                        "test1": 15,
+                                        "test2": 15,
+                                        "assignment": 10
+                                    }
+                                },
+                                "ese": {
+                                    "total": 60,
+                                    "pattern": {
+                                        "part_a": "10 x 2 = 20 marks",
+                                        "part_b": "6 x 5 = 30 marks",
+                                        "part_c": "2 x 10 = 20 marks"
+                                    }
+                                }
+                            },
+                            "course_outcomes": [
+                                {
+                                    "co_no": "CO1",
+                                    "description": "Understand the fundamentals of probability theory and random variables",
+                                    "bloom_kl": "K2"
+                                },
+                                {
+                                    "co_no": "CO2",
+                                    "description": "Apply probability distributions to solve engineering problems",
+                                    "bloom_kl": "K3"
+                                },
+                                {
+                                    "co_no": "CO3",
+                                    "description": "Analyze stochastic processes and their applications",
+                                    "bloom_kl": "K4"
+                                },
+                                {
+                                    "co_no": "CO4",
+                                    "description": "Evaluate Markov chains and random walk models",
+                                    "bloom_kl": "K5"
+                                }
+                            ],
+                            "co_po_mapping": [
+                                { "co": "CO1", "po1": 3, "po2": 2, "po3": 1 },
+                                { "co": "CO2", "po1": 3, "po2": 3, "po3": 2 },
+                                { "co": "CO3", "po1": 3, "po2": 3, "po3": 3 },
+                                { "co": "CO4", "po1": 3, "po2": 2, "po3": 2 }
+                            ],
+                            "textbooks": [
+                                {
+                                    "short_code": 1,
+                                    "title": "Probability and Statistics for Engineers and Scientists",
+                                    "author": "Ronald E. Walpole, Raymond H. Myers",
+                                    "publisher": "Pearson",
+                                    "edition": "9th Edition",
+                                    "year": 2016
+                                },
+                                {
+                                    "short_code": 2,
+                                    "title": "Introduction to Probability Models",
+                                    "author": "Sheldon M. Ross",
+                                    "publisher": "Academic Press",
+                                    "edition": "12th Edition",
+                                    "year": 2019
+                                }
+                            ],
+                            "reference_books": [
+                                {
+                                    "title": "A First Course in Probability",
+                                    "author": "Sheldon Ross",
+                                    "publisher": "Pearson",
+                                    "edition": "10th Edition",
+                                    "year": 2018
+                                }
+                            ],
+                            "video_links": [
+                                {
+                                    "module_no": 1,
+                                    "link": "https://www.youtube.com/watch?v=example1"
+                                },
+                                {
+                                    "module_no": 2,
+                                    "link": "https://www.youtube.com/watch?v=example2"
+                                }
+                            ]
+                        }
+                    ];
+
+                    this.hideLoading();
+                } catch (error) {
+                    console.error('Error loading data:', error);
+                    this.showError();
+                }
+            }
+
+            hideLoading() {
+                document.getElementById('loadingState').style.display = 'none';
+            }
+
+            setupEventListeners() {
+                // Search
+                document.getElementById('searchInput').addEventListener('input', (e) => {
+                    this.filters.search = e.target.value.toLowerCase();
+                    this.applyFilters();
+                });
+
+                // Filter selects
+                ['semester', 'credits', 'courseType', 'group'].forEach(filter => {
+                    const elementId = filter === 'courseType' ? 'courseTypeFilter' :
+                        filter === 'group' ? 'groupFilter' : `${filter}Filter`;
+                    document.getElementById(elementId).addEventListener('change', (e) => {
+                        this.filters[filter] = e.target.value;
+                        this.applyFilters();
+                    });
+                });
+
+                // Clear filters
+                document.getElementById('clearFilters').addEventListener('click', () => {
+                    this.clearAllFilters();
+                });
+
+                // Mobile filter toggle
+                document.getElementById('filterToggle').addEventListener('click', () => {
+                    const sidebar = document.getElementById('filtersSidebar');
+                    sidebar.classList.toggle('mobile-open');
+                });
+
+                // Close mobile filters when clicking outside
+                document.addEventListener('click', (e) => {
+                    const sidebar = document.getElementById('filtersSidebar');
+                    const toggle = document.getElementById('filterToggle');
+                    if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
+                        sidebar.classList.remove('mobile-open');
+                    }
+                });
+
+                // Modal close
+                document.getElementById('modalClose').addEventListener('click', () => {
+                    this.closeModal();
+                });
+
+                document.getElementById('courseModal').addEventListener('click', (e) => {
+                    if (e.target.id === 'courseModal') {
+                        this.closeModal();
+                    }
+                });
+
+                // Settings
+                document.getElementById('settingsButton').addEventListener('click', () => {
+                    this.openSettings();
+                });
+
+                document.getElementById('settingsClose').addEventListener('click', () => {
+                    this.closeSettings();
+                });
+
+                document.getElementById('settingsModal').addEventListener('click', (e) => {
+                    if (e.target.id === 'settingsModal') {
+                        this.closeSettings();
+                    }
+                });
+
+                document.getElementById('defaultLlmSelect').addEventListener('change', (e) => {
+                    localStorage.setItem('preferred_llm', e.target.value);
+                    toastManager.show('Default LLM updated', { success: true });
+                });
+
+                document.getElementById('clearDataButton').addEventListener('click', () => {
+                    if (confirm('Are you sure you want to clear all local data? This cannot be undone.')) {
+                        localStorage.clear();
+                        toastManager.show('All local data cleared', { success: true });
+                        setTimeout(() => location.reload(), 1500);
+                    }
+                });
+
+                // LLM Button
+                document.getElementById('llmButton').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const dropdown = document.getElementById('llmDropdown');
+                    dropdown.classList.toggle('active');
+                });
+
+                // Close LLM dropdown when clicking outside
+                document.addEventListener('click', (e) => {
+                    const dropdown = document.getElementById('llmDropdown');
+                    const button = document.getElementById('llmButton');
+                    if (!dropdown.contains(e.target) && !button.contains(e.target)) {
+                        dropdown.classList.remove('active');
+                    }
+                });
+
+                // Escape key to close modals
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        this.closeModal();
+                        this.closeSettings();
+                        document.getElementById('llmDropdown').classList.remove('active');
+                    }
+                });
+            }
+
+            populateFilters() {
+                const semesters = [...new Set(this.courses.map(c => c.semester).filter(Boolean))].sort();
+                const credits = [...new Set(this.courses.map(c => c.credits).filter(Boolean))].sort((a, b) => a - b);
+                const courseTypes = [...new Set(this.courses.map(c => c.course_type).filter(Boolean))].sort();
+                const groups = [...new Set(this.courses.map(c => c.group).filter(Boolean))].sort();
+
+                this.populateSelect('semesterFilter', semesters);
+                this.populateSelect('creditsFilter', credits);
+                this.populateSelect('courseTypeFilter', courseTypes);
+                this.populateSelect('groupFilter', groups);
+            }
+
+            populateSelect(selectId, options) {
+                const select = document.getElementById(selectId);
+                const currentValue = select.value;
+
+                // Clear existing options except the first one
+                while (select.children.length > 1) {
+                    select.removeChild(select.lastChild);
+                }
+
+                options.forEach(option => {
+                    const optionElement = document.createElement('option');
+                    optionElement.value = option;
+                    optionElement.textContent = option;
+                    select.appendChild(optionElement);
+                });
+
+                select.value = currentValue;
+            }
+
+            applyFilters() {
+                this.filteredCourses = this.courses.filter(course => {
+                    // Search filter
+                    if (this.filters.search) {
+                        const searchTerm = this.filters.search;
+                        const searchableText = [
+                            course.title || '',
+                            course.course_code || '',
+                            course.semester || '',
+                            course.group || '',
+                            course.course_type || '',
+                            ...(course.objectives || []),
+                            ...(course.syllabus_modules || []).map(m => m.description || ''),
+                            ...(course.course_outcomes || []).map(co => co.description || '')
+                        ].join(' ').toLowerCase();
+
+                        if (!searchableText.includes(searchTerm)) return false;
+                    }
+
+                    // Semester filter
+                    if (this.filters.semester && course.semester !== this.filters.semester) return false;
+
+                    // Credits filter
+                    if (this.filters.credits && course.credits != this.filters.credits) return false;
+
+                    // Course Type filter
+                    if (this.filters.courseType && course.course_type !== this.filters.courseType) return false;
+
+                    // Group filter
+                    if (this.filters.group && course.group !== this.filters.group) return false;
+
+                    return true;
+                });
+
+                this.renderCourses();
+                this.updateResultsInfo();
+            }
+
+            renderCourses() {
+                const grid = document.getElementById('coursesGrid');
+                const emptyState = document.getElementById('emptyState');
+
+                if (this.filteredCourses.length === 0) {
+                    grid.style.display = 'none';
+                    emptyState.style.display = 'flex';
+                    return;
+                }
+
+                grid.style.display = 'grid';
+                emptyState.style.display = 'none';
+
+                grid.innerHTML = this.filteredCourses.map(course => this.createCourseCard(course)).join('');
+
+                // Add click listeners to course cards
+                grid.querySelectorAll('.course-card').forEach((card, index) => {
+                    card.addEventListener('click', () => {
+                        this.showCourseDetail(this.filteredCourses[index]);
+                    });
+                });
+            }
+
+            createCourseCard(course) {
+                const modules = course.syllabus_modules || [];
+                const outcomes = course.course_outcomes || [];
+                const teachingHours = course.teaching_hours_per_week || {};
+
+                const totalWeeklyHours = Object.values(teachingHours).reduce((sum, hours) => sum + (hours || 0), 0);
+
+                return `
+                    <div class="course-card" data-course-id="${course.course_code || 'N/A'}">
+                        <div class="course-header">
+                            <span class="course-code">${course.course_code || 'N/A'}</span>
+                            <span class="semester-badge">${course.semester || 'N/A'}</span>
+                            <span class="course-type-badge">${course.course_type || 'N/A'}</span>
+                        </div>
+                        <h3 class="course-title">${course.title || 'Untitled Course'}</h3>
+                        <div class="course-meta">
+                            <div class="meta-item">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                    <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                ${course.credits || 0} Credits
+                            </div>
+                            <div class="meta-item">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/>
+                                    <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                ${course.group || 'N/A'}
+                            </div>
+                            <div class="meta-item">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                    <path d="M9 11H7v8h2v-8zM13 7h-2v12h2V7zM17 3h-2v16h2V3z" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                CIE: ${course.cie_marks || 0} | ESE: ${course.ese_marks || 0}
+                            </div>
+                            <div class="meta-item">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                                    <polyline points="12,6 12,12 16,14" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                ${totalWeeklyHours}h/week
+                            </div>
+                        </div>
+                        ${totalWeeklyHours > 0 ? `
+                            <div class="teaching-hours">
+                                ${teachingHours.lecture ? `<span class="hour-badge">L: ${teachingHours.lecture}</span>` : ''}
+                                ${teachingHours.tutorial ? `<span class="hour-badge">T: ${teachingHours.tutorial}</span>` : ''}
+                                ${teachingHours.practical ? `<span class="hour-badge">P: ${teachingHours.practical}</span>` : ''}
+                                ${teachingHours.research ? `<span class="hour-badge">R: ${teachingHours.research}</span>` : ''}
+                            </div>
+                        ` : ''}
+                        <div class="modules-preview">
+                            ${modules.length} Module${modules.length !== 1 ? 's' : ''} • 
+                            ${outcomes.length} Learning Outcome${outcomes.length !== 1 ? 's' : ''}
+                            ${course.prerequisites && course.prerequisites.length > 0 ? ` • ${course.prerequisites.length} Prerequisite${course.prerequisites.length !== 1 ? 's' : ''}` : ''}
+                        </div>
+                        <div class="outcomes-preview">
+                            ${outcomes.slice(0, 3).map(outcome =>
+                    `<span class="outcome-badge">${outcome.bloom_kl || 'N/A'}</span>`
+                ).join('')}
+                            ${outcomes.length > 3 ? `<span class="outcome-badge">+${outcomes.length - 3} more</span>` : ''}
+                        </div>
+                    </div>
+            showCourseDetail(course) {
+                this.currentCourse = course;
+                const modal = document.getElementById('courseModal');
+
+                // Populate modal header
+                document.getElementById('modalCourseCode').textContent = course.course_code || 'N/A';
+                document.getElementById('modalSemester').textContent = course.semester || 'N/A';
+                document.getElementById('modalCourseType').textContent = course.course_type || 'N/A';
+                document.getElementById('modalCourseTitle').textContent = course.title || 'Untitled Course';
+                document.getElementById('modalCredits').textContent = course.credits || 0;
+                document.getElementById('modalGroup').textContent = course.group || 'N/A';
+                document.getElementById('modalCIE').textContent = course.cie_marks || 0;
+                document.getElementById('modalESE').textContent = course.ese_marks || 0;
+
+                // Populate LLM dropdown
+                this.populateLlmDropdown();
+
+                // Populate modal body
+                const modalBody = document.getElementById('modalBody');
+                modalBody.innerHTML = this.createModalContent(course);
+
+                // Add module toggle functionality
+                modalBody.querySelectorAll('.module-header').forEach(header => {
+                    header.addEventListener('click', () => {
+                        const content = header.nextElementSibling;
+                        const toggle = header.querySelector('.module-toggle');
+                        const isExpanded = content.classList.contains('expanded');
+
+                        if (isExpanded) {
+                            content.classList.remove('expanded');
+                            toggle.textContent = '+';
+                        } else {
+                            content.classList.add('expanded');
+                            toggle.textContent = '−';
+                        }
+                    });
+                });
+
+                // Add module copy button functionality
+                modalBody.querySelectorAll('.module-copy-btn').forEach((btn, index) => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const moduleIndex = parseInt(btn.dataset.moduleIndex);
+                        this.copyModule(course, moduleIndex, btn);
+                    });
+                });
+
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            populateLlmDropdown() {
+                const dropdown = document.getElementById('llmDropdown');
+                const preferredLlm = localStorage.getItem('preferred_llm') || 'chatgpt';
+                
+                let html = '';
+                LLM_PROVIDERS.forEach(provider => {
+                    const isDefault = provider.id === preferredLlm;
+                    html += `
+                        <div class="llm-option ${isDefault ? 'default' : ''}" data-llm="${provider.id}">
+                            <span>${provider.icon}</span>
+                            <span>${provider.name}</span>
+                        </div>
+                    `;
+                });
+                
+                html += '<div class="llm-divider"></div>';
+                html += `
+                    <div class="llm-option" data-llm="copy">
+                        <span>📋</span>
+                        <span>Copy Only</span>
+                    </div>
+                `;
+                
+                dropdown.innerHTML = html;
+                
+                // Add click listeners
+                dropdown.querySelectorAll('.llm-option').forEach(option => {
+                    option.addEventListener('click', () => {
+                        const llmId = option.dataset.llm;
+                        dropdown.classList.remove('active');
+                        
+                        if (llmId === 'copy') {
+                            this.copyCourseContent();
+                        } else {
+                            this.openInLLM(llmId);
+                        }
+                    });
+                });
+            }
+
+            formatCourseForLLM(course) {
+                let content = `Here's a course syllabus I'm studying. Could you summarize the main topics covered and then help me with any questions I have about the material?\n\n---\n\n`;
+                
+                content += `# Course: ${course.title || 'Untitled'}\n\n`;
+                content += `## Course Information\n`;
+                content += `- Code: ${course.course_code || 'N/A'}\n`;
+                content += `- Semester: ${course.semester || 'N/A'}\n`;
+                content += `- Credits: ${course.credits || 0}\n`;
+                content += `- Group: ${course.group || 'N/A'}\n\n`;
+                
+                // Prerequisites
+                if (course.prerequisites && course.prerequisites.length > 0) {
+                    content += `## Prerequisites\n`;
+                    course.prerequisites.forEach(prereq => {
+                        content += `- ${prereq}\n`;
+                    });
+                    content += `\n`;
+                }
+                
+                // Syllabus Modules
+                if (course.syllabus_modules && course.syllabus_modules.length > 0) {
+                    content += `## Syllabus\n\n`;
+                    course.syllabus_modules.forEach(module => {
+                        content += `### Module ${module.module_no}`;
+                        if (module.contact_hours) {
+                            content += ` (${module.contact_hours} hours)`;
+                        }
+                        content += `\n\n${module.description || 'No description'}\n\n`;
+                        
+                        if (module.references && module.references.length > 0) {
+                            content += `**References:**\n`;
+                            module.references.forEach(ref => {
+                                content += `- Book ${ref.book_no}: ${ref.sections}\n`;
+                            });
+                            content += `\n`;
+                        }
+                    });
+                }
+                
+                // Course Outcomes
+                if (course.course_outcomes && course.course_outcomes.length > 0) {
+                    content += `## Course Outcomes\n\n`;
+                    course.course_outcomes.forEach(outcome => {
+                        content += `- **${outcome.co_no}**: ${outcome.description || 'No description'}`;
+                        if (outcome.bloom_kl) {
+                            content += ` (Bloom's Level: ${outcome.bloom_kl})`;
+                        }
+                        content += `\n`;
+                    });
+                    content += `\n`;
+                }
+                
+                // Textbooks
+                if (course.textbooks && course.textbooks.length > 0) {
+                    content += `## Textbooks\n\n`;
+                    course.textbooks.forEach((book, index) => {
+                        content += `${index + 1}. **${book.title || 'N/A'}** by ${book.author || 'N/A'}`;
+                        if (book.publisher) content += `, ${book.publisher}`;
+                        if (book.edition) content += `, ${book.edition}`;
+                        if (book.year) content += ` (${book.year})`;
+                        content += `\n`;
+                    });
+                    content += `\n`;
+                }
+                
+                // Reference Books
+                if (course.reference_books && course.reference_books.length > 0) {
+                    content += `## Reference Books\n\n`;
+                    course.reference_books.forEach((book, index) => {
+                        content += `${index + 1}. **${book.title || 'N/A'}** by ${book.author || 'N/A'}`;
+                        if (book.publisher) content += `, ${book.publisher}`;
+                        if (book.edition) content += `, ${book.edition}`;
+                        if (book.year) content += ` (${book.year})`;
+                        content += `\n`;
+                    });
+                }
+                
+                return content;
+            }
+
+            formatModuleForLLM(course, moduleIndex) {
+                const module = course.syllabus_modules[moduleIndex];
+                if (!module) return '';
+                
+                let content = `# Course: ${course.title || 'Untitled'}\n\n`;
+                content += `## Module ${module.module_no}`;
+                if (module.contact_hours) {
+                    content += ` (${module.contact_hours} hours)`;
+                }
+                content += `\n\n${module.description || 'No description'}\n\n`;
+                
+                if (module.references && module.references.length > 0) {
+                    content += `**References:**\n`;
+                    module.references.forEach(ref => {
+                        content += `- Book ${ref.book_no}: ${ref.sections}\n`;
+                    });
+                }
+                
+                return content;
+            }
+
+            async copyCourseContent() {
+                const content = this.formatCourseForLLM(this.currentCourse);
+                try {
+                    await navigator.clipboard.writeText(content);
+                    toastManager.show('Course content copied!', {
+                        success: true,
+                        description: 'Ready to paste anywhere',
+                        icon: '✓'
+                    });
+                } catch (err) {
+                    toastManager.show('Failed to copy', {
+                        description: 'Please try again',
+                        icon: '⚠️'
+                    });
+                }
+            }
+
+            async copyModule(course, moduleIndex, button) {
+                const content = this.formatModuleForLLM(course, moduleIndex);
+                try {
+                    await navigator.clipboard.writeText(content);
+                    
+                    // Visual feedback on button
+                    const originalContent = button.innerHTML;
+                    button.classList.add('copied');
+                    button.innerHTML = '<span>✓</span> Copied';
+                    
+                    setTimeout(() => {
+                        button.classList.remove('copied');
+                        button.innerHTML = originalContent;
+                    }, 2000);
+                    
+                    toastManager.show(`Module ${moduleIndex + 1} copied!`, {
+                        success: true,
+                        icon: '✓',
+                        duration: 2000
+                    });
+                } catch (err) {
+                    toastManager.show('Failed to copy', {
+                        description: 'Please try again',
+                        icon: '⚠️'
+                    });
+                }
+            }
+
+            async openInLLM(llmId) {
+                const provider = LLM_PROVIDERS.find(p => p.id === llmId);
+                if (!provider) return;
+                
+                const content = this.formatCourseForLLM(this.currentCourse);
+                
+                if (provider.supportsUrlQuery) {
+                    // Direct URL with query parameter
+                    const url = `${provider.baseUrl}?${provider.queryParam}=${encodeURIComponent(content)}`;
+                    window.open(url, '_blank');
+                    
+                    toastManager.show(`Opening ${provider.name}...`, {
+                        success: true,
+                        icon: provider.icon,
+                        duration: 3000
+                    });
+                } else {
+                    // Copy to clipboard and show manual open button
+                    try {
+                        await navigator.clipboard.writeText(content);
+                        
+                        toastManager.show('Content copied!', {
+                            success: true,
+                            description: `Opening ${provider.name}. Paste the content to start.`,
+                            icon: '✓',
+                            duration: 0, // Don't auto-dismiss
+                            action: {
+                                label: `Open ${provider.name} →`,
+                                onClick: `window.open('${provider.baseUrl}', '_blank'); toastManager.container.innerHTML = '';`
+                            }
+                        });
+                    } catch (err) {
+                        toastManager.show('Failed to copy', {
+                            description: 'Please try again',
+                            icon: '⚠️'
+                        });
+                    }
+                }
+            }
+
+            openSettings() {
+                // Populate default LLM select
+                const select = document.getElementById('defaultLlmSelect');
+                const preferredLlm = localStorage.getItem('preferred_llm') || 'chatgpt';
+                
+                select.innerHTML = '';
+                LLM_PROVIDERS.forEach(provider => {
+                    const option = document.createElement('option');
+                    option.value = provider.id;
+                    option.textContent = `${provider.icon} ${provider.name}`;
+                    if (provider.id === preferredLlm) {
+                        option.selected = true;
+                    }
+                    select.appendChild(option);
+                });
+                
+                document.getElementById('settingsModal').classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            createModalContent(course) {
+                const objectives = course.objectives || [];
+                const modules = course.syllabus_modules || [];
+                const outcomes = course.course_outcomes || [];
+                const assessment = course.assessment || {};
+                const prerequisites = course.prerequisites || [];
+                const textbooks = course.textbooks || [];
+                const referenceBooks = course.reference_books || [];
+                const videoLinks = course.video_links || [];
+                const teachingHours = course.teaching_hours_per_week || {};
+
+                return `
+                    ${prerequisites.length > 0 ? `
+                        <div class="detail-section">
+                            <h3 class="detail-title">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                Prerequisites
+                            </h3>
+                            <div class="prerequisites-list">
+                                ${prerequisites.map(prereq => `<span class="prereq-badge">${prereq}</span>`).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    ${Object.keys(teachingHours).some(key => teachingHours[key] > 0) ? `
+                        <div class="detail-section">
+                            <h3 class="detail-title">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                                    <polyline points="12,6 12,12 16,14" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                Teaching Hours per Week
+                            </h3>
+                            <div class="teaching-hours">
+                                ${teachingHours.lecture ? `<span class="hour-badge">Lecture: ${teachingHours.lecture}</span>` : ''}
+                                ${teachingHours.tutorial ? `<span class="hour-badge">Tutorial: ${teachingHours.tutorial}</span>` : ''}
+                                ${teachingHours.practical ? `<span class="hour-badge">Practical: ${teachingHours.practical}</span>` : ''}
+                                ${teachingHours.research ? `<span class="hour-badge">Research: ${teachingHours.research}</span>` : ''}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    ${objectives.length > 0 ? `
+                        <div class="detail-section">
+                            <h3 class="detail-title">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                Course Objectives
+                            </h3>
+                            <div class="objectives-list">
+                                <ul>
+                                    ${objectives.map(objective => `<li>• ${objective}</li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    ${modules.length > 0 ? `
+                        <div class="detail-section">
+                            <h3 class="detail-title">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                Syllabus Modules
+                            </h3>
+                            ${modules.map(module => `
+                                <div class="module-item">
+                                    <div class="module-header">
+                                        <span class="module-title">
+                                            Module ${module.module_no}
+                                            ${module.contact_hours ? `<span class="module-hours">${module.contact_hours}h</span>` : ''}
+                                        </span>
+                                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                            <button class="module-copy-btn" data-module-index="${modules.indexOf(module)}" onclick="event.stopPropagation()">
+                                                <span>📋</span> Copy
+                                            </button>
+                                            <span class="module-toggle">+</span>
+                                        </div>
+                                    </div>
+                                    <div class="module-content">
+                                        <p>${module.description || 'No description available'}</p>
+                                        ${module.references && module.references.length > 0 ? `
+                                            <div class="module-references">
+                                                <strong>References:</strong>
+                                                ${module.references.map(ref => `
+                                                    <p>• Book ${ref.book_no}: ${ref.sections}</p>
+                                                `).join('')}
+                                            </div>
+                                        ` : ''}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+
+                    ${outcomes.length > 0 ? `
+                        <div class="detail-section">
+                            <h3 class="detail-title">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                Course Outcomes
+                            </h3>
+                            <div class="outcome-list">
+                                ${outcomes.map(outcome => `
+                                    <div class="outcome-item">
+                                        <div class="outcome-header">
+                                            <span class="outcome-code">${outcome.co_no || 'N/A'}</span>
+                                            <span class="knowledge-level">${outcome.bloom_kl || 'N/A'}</span>
+                                        </div>
+                                        <div class="outcome-description">
+                                            ${outcome.description || 'No description available'}
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    ${(assessment.cie || assessment.ese) ? `
+                        <div class="detail-section">
+                            <h3 class="detail-title">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                                    <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="16" y1="13" x2="8" y2="13" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="16" y1="17" x2="8" y2="17" stroke="currentColor" stroke-width="2"/>
+                                    <polyline points="10,9 9,9 8,9" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                Assessment Pattern
+                            </h3>
+                            <div class="assessment-grid">
+                                ${assessment.cie ? `
+                                    <div class="assessment-item">
+                                        <div class="assessment-title">Continuous Internal Evaluation (CIE)</div>
+                                        ${Object.entries(assessment.cie.components || {}).map(([component, marks]) => `
+                                            <p><strong>${component.charAt(0).toUpperCase() + component.slice(1)}:</strong> ${marks} marks</p>
+                                        `).join('')}
+                                    </div>
+                                ` : ''}
+                                ${assessment.ese ? `
+                                    <div class="assessment-item">
+                                        <div class="assessment-title">End Semester Examination (ESE)</div>
+                                        <p><strong>Total:</strong> ${assessment.ese.total || 0} marks</p>
+                                        ${Object.entries(assessment.ese.pattern || {}).map(([part, description]) => `
+                                            <p><strong>${part.replace('_', ' ').toUpperCase()}:</strong> ${description}</p>
+                                        `).join('')}
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    ${textbooks.length > 0 ? `
+                        <div class="detail-section">
+                            <h3 class="detail-title">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                Textbooks
+                            </h3>
+                            <div style="display: grid; gap: 1rem;">
+                                ${textbooks.map(book => `
+                                    <div style="background: rgba(31, 41, 55, 0.5); border: 1px solid rgba(59, 130, 246, 0.1); border-radius: 0.75rem; padding: 1rem;">
+                                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+                                            <strong>${book.title || 'N/A'}</strong>
+                                            ${book.short_code ? `<span style="background: rgba(59, 130, 246, 0.1); color: #3b82f6; padding: 0.25rem 0.5rem; border-radius: 0.5rem; font-size: 0.8rem;">[${book.short_code}]</span>` : ''}
+                                        </div>
+                                        <span style="color: #94a3b8;">
+                                            by ${book.author || 'N/A'}<br>
+                                            ${book.publisher || 'N/A'}, ${book.edition || 'N/A'} (${book.year || 'N/A'})
+                                        </span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    ${referenceBooks.length > 0 ? `
+                        <div class="detail-section">
+                            <h3 class="detail-title">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                                    <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                Reference Books
+                            </h3>
+                            <div style="display: grid; gap: 1rem;">
+                                ${referenceBooks.map(book => `
+                                    <div style="background: rgba(31, 41, 55, 0.5); border: 1px solid rgba(59, 130, 246, 0.1); border-radius: 0.75rem; padding: 1rem;">
+                                        <strong>${book.title || 'N/A'}</strong><br>
+                                        <span style="color: #94a3b8;">
+                                            by ${book.author || 'N/A'}<br>
+                                            ${book.publisher || 'N/A'}, ${book.edition || 'N/A'} (${book.year || 'N/A'})
+                                        </span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    ${videoLinks.length > 0 ? `
+                        <div class="detail-section">
+                            <h3 class="detail-title">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                    <polygon points="5,3 19,12 5,21" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                Video Links
+                            </h3>
+                            <div style="display: grid; gap: 0.5rem;">
+                                ${videoLinks.map(link => `
+                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: rgba(59, 130, 246, 0.1); border-radius: 0.5rem;">
+                                        <span>Module ${link.module_no}</span>
+                                        <a href="${link.link || '#'}" target="_blank" rel="noopener noreferrer" 
+                                           style="color: #3b82f6; text-decoration: none; padding: 0.5rem 1rem; background: rgba(59, 130, 246, 0.2); border-radius: 0.5rem; transition: all 0.3s ease;"
+                                           onmouseover="this.style.backgroundColor='rgba(59, 130, 246, 0.3)'"
+                                           onmouseout="this.style.backgroundColor='rgba(59, 130, 246, 0.2)'">
+                                            Watch Video →
+                                        </a>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    ${course.exam_hours ? `
+                        <div class="detail-section">
+                            <h3 class="detail-title">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                                    <polyline points="12,6 12,12 16,14" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                Exam Duration
+                            </h3>
+                            <div style="background: rgba(31, 41, 55, 0.5); border: 1px solid rgba(59, 130, 246, 0.1); border-radius: 0.75rem; padding: 1rem;">
+                                <strong>${course.exam_hours}</strong>
+                            </div>
+                        </div>
+                    ` : ''}
+                `;
+            }
+
+            closeModal() {
+                document.getElementById('courseModal').classList.remove('active');
+                document.getElementById('llmDropdown').classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            updateResultsInfo() {
+                const info = document.getElementById('resultsInfo');
+                const total = this.courses.length;
+                const filtered = this.filteredCourses.length;
+
+                if (total === 0) {
+                    info.textContent = 'No courses available';
+                } else if (filtered === total) {
+                    info.textContent = `Showing all ${total} course${total !== 1 ? 's' : ''}`;
+                } else {
+                    info.textContent = `Showing ${filtered} of ${total} course${total !== 1 ? 's' : ''}`;
+                }
+            }
+
+            clearAllFilters() {
+                // Reset filter object
+                this.filters = {
+                    search: '',
+                    semester: '',
+                    credits: '',
+                    courseType: '',
+                    group: ''
+                };
+
+                // Reset form elements
+                document.getElementById('searchInput').value = '';
+                document.getElementById('semesterFilter').value = '';
+                document.getElementById('creditsFilter').value = '';
+                document.getElementById('courseTypeFilter').value = '';
+                document.getElementById('groupFilter').value = '';
+
+                this.applyFilters();
+            }
+        }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', () => {
+            new CourseManager();
+        });
+    </script>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js" ></script><script async src="https://scripts.simpleanalyticscdn.com/auto-events.js" data-extensions="pdf,csv,docx,xlsx,zip,doc,xls"></script></body>
+
+</html>
